@@ -15,7 +15,7 @@ CREATE TABLE habit (
     maxStreak INTEGER DEFAULT 0,
     user_id INT,
     FOREIGN KEY(user_id)
-        REFERENCES user_table(user_id)
+        REFERENCES users(user_id)
         ON DELETE SET NULL
 );
 
