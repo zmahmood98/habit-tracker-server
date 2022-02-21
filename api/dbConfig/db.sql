@@ -2,9 +2,9 @@ DROP TABLE IF EXISTS users;
 
 CREATE TABLE users (
     user_id SERIAL PRIMARY KEY,
-    username VARCHAR(50) NOT NULL,
-    email VARCHAR(50) NOT NULL,
-    passwd VARCHAR(50) NOT NULL
+    username VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    passwd VARCHAR(100) NOT NULL
 );
 
 DROP TABLE IF EXISTS habit;
