@@ -1,4 +1,4 @@
-const db = require('../db_config/config');
+const db = require('../dbConfig/init');
 const SQL = require('sql-template-strings');
 
 class User {
