@@ -27,7 +27,8 @@
     "dotenv": "^16.0.0",
     "express": "^4.17.3",
     "jsonwebtoken": "^8.5.1",
-    "pg": "^8.7.3"
+    "pg": "^8.7.3",
+    "sql-template-strings": "^2.2.2"
   },
   "devDependencies": {
     "jest": "^27.5.1",
