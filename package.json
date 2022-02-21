@@ -1,0 +1,13 @@
+{
+    "description": "Deploying server and database with Heroku",
+    "scripts": {
+        "start": "node ./api/dbConfig/seedDev.js && node ./api/index.js"
+    },
+    "author": "https://github.com/gi-ba-bu",
+    "license": "ISC",
+    "dependencies": {
+        "cors": "^2.8.5",
+        "express": "^4.17.1",
+        "pg": "^8.3.3"
+    }
+}
