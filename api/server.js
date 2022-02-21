@@ -14,6 +14,7 @@ app.use('/auth', authRoutes);
 app.use('/users', userRoutes);
 app.use('/habits', habitRoutes)
 
-app.get('/', (req, res) => res.send('Welcome to ReinHabit'))
+console.log('Hello')
+// app.get('/', (req, res) => res.send('Welcome to ReinHabit'))
 
 module.exports = app
