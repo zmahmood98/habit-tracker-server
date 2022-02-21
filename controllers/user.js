@@ -15,8 +15,9 @@ async function index (req, res) {
 
 async function findByname (req, res) {
     try {
-        const findName = await User.
+        // const findName = await User.(req.params.username)
         res.status(200).json(users)
+
     } catch(err) {
         res.status(500).send({err})
     }
