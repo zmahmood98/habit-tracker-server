@@ -12,9 +12,8 @@ const habitRoutes = require('./routes/habits')
 
 app.use('/auth', authRoutes);
 app.use('/users', userRoutes);
-app.use('/habits', habitRoutes)
+// app.use('/habits', habitRoutes)
 
-console.log('Hello')
-// app.get('/', (req, res) => res.send('Welcome to ReinHabit'))
+app.get('/', (req, res) => res.send('Welcome to ReinHabit'))
 
 module.exports = app
