@@ -13,11 +13,14 @@ async function index (req, res) {
     }
 }
 
-async function findByname (req, res) {
+async function findByName (req, res) {
     try {
-        // const findName = await User.(req.params.username)
-        res.status(200).json(users)
-
+        const findName = await User.findUsername(req.params.username)
+        if (!findName.rows.length) {
+            res.status(404).json({msg: "User not found"})
+        } else {
+            res.status(200).json({msg: "User found"})
+        }
     } catch(err) {
         res.status(500).send({err})
     }
@@ -60,4 +63,4 @@ async function login (req, res) {
 }
 
 
-module.exports = { index, register, login }
+module.exports = { index, findByName, register, login }
