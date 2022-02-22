@@ -69,10 +69,12 @@ class Habit {
                 resolve(habits)
 
             } catch (err) {
-                reject(`There was an error getting that name: ${err}`)
+                reject(`There was an error getting ${username}'s habits: ${err}`)
             }
         })
     }
+
+    // 
 
 }
 
