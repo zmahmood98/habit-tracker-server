@@ -1,4 +1,4 @@
-const Habit = require('../model/Habit');
+const {Habit} = require('../model/Habit');
 
 async function getAllHabits (req, res){
     try {
@@ -11,7 +11,9 @@ async function getAllHabits (req, res){
 
 async function create (req, res){
     try {
+        console.log("this is what is getting sent",req.body)
         const {username} = req.params
+        console.log(username)
         const habit = await Habit.createHabit({...req.body, username})
         res.status(201).json(habit)
     } catch (err) {
@@ -29,9 +31,9 @@ async function destroy(req, res){
     }
 }
 
-async function getHabitsByName (req, res){
+async function getHabitsByEmail (req, res){
     try {
-        const habit = await Habit.getHabitsByName(req.params.name);
+        const habit = await Habit.getHabitsByEmail(req.params.email);
         res.status(200).json(habit)
     } catch (err) {
         res.status(500).send({ err })
@@ -64,7 +66,7 @@ module.exports = {
     getAllHabits,
     create,
     destroy,
-    getHabitsByName,
+    getHabitsByEmail,
     getHabits,
     updateHabitCounter,
 }
