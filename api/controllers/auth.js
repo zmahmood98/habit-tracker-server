@@ -6,9 +6,8 @@ const User = require('../model/User');
 
 async function register (req, res) {
     try {const user = await User.checkAvailEmail(req.body.email)
-            console.log(parseInt(user.count)) 
-            count = parseInt(user.count)
-            if(!!count){
+            count = parseInt(user.count) // count = 0 if no existing account is registered with that email
+            if(!!count){ // check if email already exists
             res.sendStatus(409)
         }else{
             const salt = await bcrypt.genSalt();
@@ -24,7 +23,8 @@ async function register (req, res) {
 async function login (req, res) {
     try {
         const user = await User.findByEmail(req.body.email)
-        if(!user){ throw new Error('No user with this email') }
+        console.log(user)
+        //if(!user){ throw new Error('No user with this email') }
         const authed = bcrypt.compareSync(req.body.password, user.passwd)
         if (!!authed) {
             const payload = { username: user.username, email: user.email }

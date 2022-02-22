@@ -66,10 +66,10 @@ To create this ....
 | /auth/login      | POST      | auth   | 
 | /auth/register   | POST      | auth   |  
 
-
 ## Fixed Bugs
 
 - [x] `bcrypt.compare()` deprecated
+- [x] same email can be used to open different user accounts
 
 ## Remaining Bugs
 
