@@ -51,7 +51,19 @@ class User {
                 let user = new User(result.rows[0])
                 res(user)
             } catch (err) {
-                rej(`Error retrieving user: ${err}`)
+                rej(`Error retrieving user: no account for ${email}`)
+            }
+        })
+    }
+
+    static checkAvailEmail(email){
+        return new Promise(async (res, rej) => {
+            try {
+                let count = await db.query(SQL`SELECT COUNT(1)
+                FROM users WHERE email = ${email};`);
+                res(count.rows[0])
+            } catch (err) {
+                rej(`Error checking email`)
             }
         })
     }
