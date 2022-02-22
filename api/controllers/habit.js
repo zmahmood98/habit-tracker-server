@@ -42,8 +42,8 @@ async function getHabitsByEmail (req, res){
 
 async function getHabits (req, res){
     try {
-        const {habit_id, username} = req.params
-        const getData = await Habit.getHabitsPlusStreaks(habit_id, username)
+        const {username} = req.params
+        const getData = await Habit.getHabitsPlusStreaks(username)
         res.status(201).json(getData.rows)
     } catch (err) {
         res.status(403).send({err: err})
