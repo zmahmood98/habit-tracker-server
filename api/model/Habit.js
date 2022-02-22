@@ -64,7 +64,7 @@ class Habit {
         })
     }
 
-    // Get habits by username
+    // Get habits by email 
     static getHabitsByEmail(email) {
         return new Promise(async (res, rej) => {
             try {
