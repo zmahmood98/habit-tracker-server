@@ -83,7 +83,7 @@ class Habit {
     }
 
     // Gets habits and updates streaks
-    static getHabitsPlusStreaks (habit_id, username) {
+    static getHabitsPlusStreaks (username) {
 
         return new Promise(async (res, rej) => {
 
@@ -146,6 +146,8 @@ class Habit {
                 const getUser = await db.query(SQL`SELECT user_id FROM users WHERE username = ${username};`)
 
                 const habitData = await db.query(SQL`SELECT * FROM habit WHERE user_id = ${parseInt(getUser.rows[0].user_id)} ORDER BY habit_id DESC;`)
+
+                console.log(habitData)
 
                 res(habitData)
 
