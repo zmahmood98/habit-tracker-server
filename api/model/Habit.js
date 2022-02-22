@@ -64,7 +64,7 @@ class Habit {
     static getHabitsByName(username) {
         return new Promise(async (res, rej) => {
             try {
-                const allHabits = await db.query(SQL`SELECT * FROM habit INNER JOIN user_table ON (habit.user_id = users.user_id) AND (users.username = ${username}) ORDER BY habit_id DESC;`);
+                const allHabits = await db.query(SQL`SELECT * FROM habit INNER JOIN users ON (habit.user_id = users.user_id) AND (users.username = ${username}) ORDER BY habit_id DESC;`);
 
                 let habits = allHabits.rows.map(r => new Habit(r))
 
