@@ -53,7 +53,7 @@ class Habit {
                 await db.query(SQL`DELETE FROM habit WHERE habit_id = ${id};`)
 
                 res('Habit deleted')
-                
+
             } catch (err) {
                 rej(`There was an error deleting that habit: ${err}`)
             }
@@ -149,7 +149,7 @@ class Habit {
         })
     }
 
-    static newHabitEntry(data) {
+    static newEntry(data) {
 
         return new Promise(async (res, rej) => {
 
