@@ -6,7 +6,9 @@ const User = require('../model/User');
 
 async function register (req, res) {
     try {const user = await User.checkAvailEmail(req.body.email)
-        if(!!user){
+            console.log(parseInt(user.count)) 
+            count = parseInt(user.count)
+            if(!!count){
             res.sendStatus(409)
         }else{
             const salt = await bcrypt.genSalt();
