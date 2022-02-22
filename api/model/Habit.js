@@ -17,8 +17,22 @@ class Habit {
         return new Promise(async (res, rej) => {
             try {
                 let result = await db.query(SQL`SELECT * FROM habit`);
+                // authors = result.rows.map(a => new Author({ id: a.id, name: a.name }))
+                // {
+                //     reinhabit_dev_api  |       habit_id: 1,
+                //     reinhabit_dev_api  |       habitdescription: 'running',
+                //     reinhabit_dev_api  |       frequency: 5,
+                //     reinhabit_dev_api  |       currentfrequency: null,
+                //     reinhabit_dev_api  |       currenttime: 2022-02-22T15:27:14.305Z,
+                //     reinhabit_dev_api  |       currentstreak: 0,
+                //     reinhabit_dev_api  |       maxstreak: 0,
+                //     reinhabit_dev_api  |       user_id: 1
+                //     reinhabit_dev_api  |     },
 
-                let habits = result.rows.map(r => new Habit(r))
+                let habits = await  result.rows.map(r => new Habit({habit_id: r.habit_id, habitDescription: r.habitdescription, frequency: r.frequency, currentFrequency: r.currentfrequency, currentTime: r.currenttime, currentStreak: r.currentstreak, maxStreak: r.maxstreak  }))
+                console.log("thsi is the get all habits table result response", result.rows)
+                console.log("this is the habit that is getting set", habits)
+
 
                 res(habits)
 
@@ -33,8 +47,9 @@ class Habit {
         return new Promise (async (res, rej) => {
             try {
                 const getUser = await db.query("SELECT user_id FROM users WHERE username = $1", [username])
+
                 
-                const createdHabit = await db.query(SQL`INSERT INTO habit (habit, currentFrequency, frequency, user_id) VALUES (${habit}, 0, ${frequency}, ${getUser.rows[0].user_id}) RETURNING *;`)
+                const createdHabit = await db.query(SQL`INSERT INTO habit (habitDescription,  frequency, user_id) VALUES (${habit}, ${frequency}, ${getUser.rows[0].user_id}) RETURNING *;`)
 
                 let newHabit = new Habit(createdHabit.rows[0]);
 
@@ -61,17 +76,19 @@ class Habit {
     }
 
     // Get habits by username
-    static getHabitsByName(username) {
+    static getHabitsByEmail(email) {
         return new Promise(async (res, rej) => {
             try {
-                const allHabits = await db.query(SQL`SELECT * FROM habit INNER JOIN user_table ON (habit.user_id = users.user_id) AND (users.username = ${username}) ORDER BY habit_id DESC;`);
+                const allHabits = await db.query(SQL`SELECT * FROM habit INNER JOIN users ON (habit.user_id = users.user_id) AND (users.email = ${email}) ORDER BY habit_id DESC;`);
 
-                let habits = allHabits.rows.map(r => new Habit(r))
+                let habits = allHabits.rows.map(r => new Habit({habit_id: r.habit_id, habitDescription: r.habitdescription, frequency: r.frequency, currentFrequency: r.currentfrequency, currentTime: r.currenttime, currentStreak: r.currentstreak, maxStreak: r.maxstreak  }))
+
+                console.log("these are the habits that are getting sent back", habits)
 
                 res(habits)
 
             } catch (err) {
-                rej(`There was an error getting ${username}'s habits: ${err}`)
+                rej(`There was an error getting these habits: ${err}`)
             }
         })
     }

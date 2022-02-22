@@ -6,7 +6,7 @@ const { verifyToken } = require('../middleware/auth')
 const habitController = require('../controllers/habit')
 
 router.get('/', verifyToken, habitController.getAllHabits)
-router.get('/:name', verifyToken, habitController.getHabitsByName)
+router.get('/:email',verifyToken, habitController.getHabitsByEmail)
 router.get('/habits/:habit_id/:username', habitController.getHabits)
 router.post('/:username', habitController.create)
 router.post('/:username/habits/entries', habitController.updateHabitCounter)
