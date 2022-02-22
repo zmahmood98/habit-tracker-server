@@ -30,8 +30,8 @@ CREATE TABLE habit (
 );
 
 INSERT INTO habit(habitDescription, frequency, currentFrequency, currentTime, currentStreak, maxStreak, user_id)
-(drink water, 8, 3, current_timestamp - INTERVAL '3 day', 3, 3, 1),
-(run 2k, 1, 0, current_timestamp - INTERVAL '2 day', 0, 1, 2);
+("drink water", 8, 3, current_timestamp - INTERVAL '3 day', 3, 3, 1),
+("run 2k", 1, 0, current_timestamp - INTERVAL '2 day', 0, 1, 2);
 
 
 
