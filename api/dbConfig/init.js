@@ -2,7 +2,7 @@ const { Pool } = require("pg");
 let pool;
 console.log(process.env.NODE_ENV);
 console.log(process.env.DATABASE_URL);
-console.log(process.env.SESSION_SECRET);
+console.log(process.env.SECRET);
 
 if (process.env.NODE_ENV === 'production') { //default environment for heroku
     pool = new Pool({
