@@ -17,17 +17,6 @@ class Habit {
         return new Promise(async (res, rej) => {
             try {
                 let result = await db.query(SQL`SELECT * FROM habit`);
-                // authors = result.rows.map(a => new Author({ id: a.id, name: a.name }))
-                // {
-                //     reinhabit_dev_api  |       habit_id: 1,
-                //     reinhabit_dev_api  |       habitdescription: 'running',
-                //     reinhabit_dev_api  |       frequency: 5,
-                //     reinhabit_dev_api  |       currentfrequency: null,
-                //     reinhabit_dev_api  |       currenttime: 2022-02-22T15:27:14.305Z,
-                //     reinhabit_dev_api  |       currentstreak: 0,
-                //     reinhabit_dev_api  |       maxstreak: 0,
-                //     reinhabit_dev_api  |       user_id: 1
-                //     reinhabit_dev_api  |     },
 
                 let habits = await  result.rows.map(r => new Habit({habit_id: r.habit_id, habitDescription: r.habitdescription, frequency: r.frequency, currentFrequency: r.currentfrequency, currentTime: r.currenttime, currentStreak: r.currentstreak, maxStreak: r.maxstreak  }))
                 console.log("thsi is the get all habits table result response", result.rows)
