@@ -54,11 +54,24 @@ async function updateHabitCounter(req, res) {
     try {
         //check if valid jwt is for the requested user
         // if (res.locals.user !== req.params.username) throw err
+        let response
+        let username = req.body.username
         const habit = await Habit.newEntry({ ...req.body, date: new Date().toLocaleString('en-US', {timeZone: 'Europe/London'})});
-        res.status(201).json(habit)
+        habit === 'Everything up to date!' ? response = await Habit.getHabitsPlusStreaks(username) : console.log(habit)
+        console.log(response)
+        res.status(201).json(response)
       } catch (err) {
         res.status(403).send({ err: err })
       }
+}
+
+async function getGraphData (req, res){
+    try {
+        const data = await Habit.getGraphData(req.params.email);
+        res.status(200).json(data)
+    } catch (err) {
+        res.status(500).send({ err })
+    }
 }
 
 
@@ -69,4 +82,5 @@ module.exports = {
     getHabitsByEmail,
     getHabits,
     updateHabitCounter,
+    getGraphData
 }
