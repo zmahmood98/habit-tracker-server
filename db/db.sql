@@ -34,8 +34,8 @@ CREATE TABLE habit (
 
 INSERT INTO habit (habitDescription, frequency, currentFrequency, currentTime, currentStreak, maxStreak, user_id) VALUES
 ('drink water', 8, 3, current_timestamp - INTERVAL '3 days', 3, 3, 1),
-('run 2k', 1, 0, current_timestamp - INTERVAL '2 days', 0, 1, 2);
-
+('run 2k', 1, 0, current_timestamp - INTERVAL '2 days', 0, 1, 2),
+('code', 5, 2,  current_timestamp, 0, 0, 2);
 
 
 
@@ -90,4 +90,7 @@ INSERT INTO habitCount(habit_id, timeDone, completedStreak) VALUES
         (1, current_timestamp - INTERVAL '3 day', FALSE),
 
         --completed habit 2 once two days ago (did not complete yesterday or today)
-        (2, current_timestamp - INTERVAL '2 day', FALSE);
+        (2, current_timestamp - INTERVAL '2 day', FALSE),
+
+        (2, current_timestamp, FALSE),
+        (2, current_timestamp, FALSE);
