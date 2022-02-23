@@ -23,8 +23,9 @@ class User {
     static findUsername (username) {
         return new Promise(async (res, rej) => {
             try {
-                const user = await db.query(SQL`SELECT * FROM users WHERE username = ${username};`);
-                res(user)
+                let result = await db.query(SQL`SELECT * FROM users WHERE username = ${username};`);
+                let users = result.rows.map(r => new User(r))
+                res(users)
             } catch (err) {
                 rej(`Error finding that user: ${err}`)
             }
