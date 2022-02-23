@@ -197,10 +197,10 @@ class Habit {
         return new Promise(async (res, rej) => {
             try {
 
-                const user_id = await db.query(SQL`SELECT user_id FROM users WHERE email = ${email};`)
+                const userid = await db.query(SQL`SELECT user_id FROM users WHERE email = ${email};`)
 
                 // all rows in habit table for a specific user
-                const userHabitIds = await db.query(SQL`SELECT habit_id FROM habit WHERE user_id = ${user_id.rows[0].user_id};`);
+                const userHabitIds = await db.query(SQL`SELECT habit_id FROM habit WHERE user_id = ${userid.rows[0].user_id};`);
 
                 for(let habitId of userHabitIds.rows) {
 
@@ -208,31 +208,91 @@ class Habit {
     
                     const todayHabitCount = await db.query(SQL`SELECT COUNT(*) FROM habitCount WHERE timeDone::DATE = current_date AND habit_id = ${habitId.habit_id};`);
     
-                    // const yesterdayDate = await db.query(SQL`SELECT DISTINCT timeDone::DATE FROM habitCount WHERE timeDone::DATE = current_date - 1;`)
+                    const yesterdayDate = await db.query(SQL`SELECT DISTINCT timeDone::DATE FROM habitCount WHERE timeDone::DATE = current_date - 1;`)
     
-                    // const yesterdayHabitCount = await db.query(SQL`SELECT COUNT(*) FROM habitCount WHERE timeDone::DATE = current_date - 1 AND habit_id = ${habitId.habit_id};`);
+                    const yesterdayHabitCount = await db.query(SQL`SELECT COUNT(*) FROM habitCount WHERE timeDone::DATE = current_date - 1 AND habit_id = ${habitId.habit_id};`);
     
-                    // const dayBeforeYdayDate = await db.query(SQL`SELECT DISTINCT timeDone::DATE FROM habitCount WHERE timeDone::DATE = current_date - 2;`)
+                    const dayBeforeYdayDate = await db.query(SQL`SELECT DISTINCT timeDone::DATE FROM habitCount WHERE timeDone::DATE = current_date - 2;`)
     
-                    // const dayBeforeYdaydHabitCount = await db.query(SQL`SELECT COUNT(*) FROM habitCount WHERE timeDone::DATE = current_date - 2 AND habit_id = ${habitId.habit_id};`);
+                    const dayBeforeYdaydHabitCount = await db.query(SQL`SELECT COUNT(*) FROM habitCount WHERE timeDone::DATE = current_date - 2 AND habit_id = ${habitId.habit_id};`);
     
-                    // const threeDaysBeforeDate = await db.query(SQL`SELECT DISTINCT timeDone::DATE FROM habitCount WHERE timeDone::DATE = current_date - 3;`)
+                    const threeDaysBeforeDate = await db.query(SQL`SELECT DISTINCT timeDone::DATE FROM habitCount WHERE timeDone::DATE = current_date - 3;`)
     
-                    // const threeDaysBeforeHabitCount = await db.query(SQL`SELECT COUNT(*) FROM habitCount WHERE timeDone::DATE = current_date - 3 AND habit_id = ${habitId.habit_id};`);
+                    const threeDaysBeforeHabitCount = await db.query(SQL`SELECT COUNT(*) FROM habitCount WHERE timeDone::DATE = current_date - 3 AND habit_id = ${habitId.habit_id};`);
     
-                    // const fourDaysBeforeDate = await db.query(SQL`SELECT DISTINCT timeDone::DATE FROM habitCount WHERE timeDone::DATE = current_date - 4;`)
+                    const fourDaysBeforeDate = await db.query(SQL`SELECT DISTINCT timeDone::DATE FROM habitCount WHERE timeDone::DATE = current_date - 4;`)
+                    console.log(fourDaysBeforeDate.rows)
     
-                    // const fourDaysBeforeHabitCount = await db.query(SQL`SELECT COUNT(*) FROM habitCount WHERE timeDone::DATE = current_date - 4 AND habit_id = ${habitId.habit_id};`);
+                    const fourDaysBeforeHabitCount = await db.query(SQL`SELECT COUNT(*) FROM habitCount WHERE timeDone::DATE = current_date - 4 AND habit_id = ${habitId.habit_id};`);
     
-                    // const fiveDaysBeforeDate = await db.query(SQL`SELECT DISTINCT timeDone::DATE FROM habitCount WHERE timeDone::DATE = current_date - 5;`)
+                    const fiveDaysBeforeDate = await db.query(SQL`SELECT DISTINCT timeDone::DATE FROM habitCount WHERE timeDone::DATE = current_date - 5;`)
     
-                    // const fiveDaysBeforeHabitCount = await db.query(SQL`SELECT COUNT(*) FROM habitCount WHERE timeDone::DATE = current_date - 5 AND habit_id = ${habitId.habit_id};`);
+                    const fiveDaysBeforeHabitCount = await db.query(SQL`SELECT COUNT(*) FROM habitCount WHERE timeDone::DATE = current_date - 5 AND habit_id = ${habitId.habit_id};`);
     
-                    // const sixDaysBeforeDate = await db.query(SQL`SELECT DISTINCT timeDone::DATE FROM habitCount WHERE timeDone::DATE = current_date - 6;`)
+                    const sixDaysBeforeDate = await db.query(SQL`SELECT DISTINCT timeDone::DATE FROM habitCount WHERE timeDone::DATE = current_date - 6;`)
     
-                    // const sixDaysBeforeHabitCount = await db.query(SQL`SELECT COUNT(*) FROM habitCount WHERE timeDone::DATE = current_date - 6 AND habit_id = ${habitId.habit_id};`);
+                    const sixDaysBeforeHabitCount = await db.query(SQL`SELECT COUNT(*) FROM habitCount WHERE timeDone::DATE = current_date - 6 AND habit_id = ${habitId.habit_id};`);
 
-                    res([todayDate, todayHabitCount])
+                    let graphObj
+                    if(sixDaysBeforeDate.rows[0].timedone !== 'undefined') {
+                        graphObj = {
+                            todayDate: todayDate.rows[0].timedone,
+                            todayHabitCount: todayHabitCount.rows[0].count,
+                            yesterdayDate: yesterdayDate.rows[0].timedone,
+                            yesterdayHabitCount: yesterdayHabitCount.rows[0].count,
+                            dayBeforeYdayDate: dayBeforeYdayDate.rows[0].timedone,
+                            dayBeforeYdaydHabitCount: dayBeforeYdaydHabitCount.rows[0].count,
+                            threeDaysBeforeDate: threeDaysBeforeDate.rows[0].timedone,
+                            threeDaysBeforeHabitCount: threeDaysBeforeHabitCount.rows[0].count,
+                            fourDaysBeforeDate: fourDaysBeforeDate.rows[0].timedone,
+                            fourDaysBeforeHabitCount: fourDaysBeforeHabitCount.rows[0].count,
+                            fiveDaysBeforeDate: fiveDaysBeforeDate.rows[0].timedone,
+                            fiveDaysBeforeHabitCount: fiveDaysBeforeHabitCount.rows[0].count,
+                            sixDaysBeforeDate: sixDaysBeforeDate.rows[0].timedone,
+                            sixDaysBeforeHabitCount: sixDaysBeforeHabitCount.rows[0].count
+                        }
+                    } else if (fiveDaysBeforeDate.rows[0].timedone !== 'undefined') {
+                        graphObj = {
+                            todayDate: todayDate.rows[0].timedone,
+                            todayHabitCount: todayHabitCount.rows[0].count,
+                            yesterdayDate: yesterdayDate.rows[0].timedone,
+                            yesterdayHabitCount: yesterdayHabitCount.rows[0].count,
+                            dayBeforeYdayDate: dayBeforeYdayDate.rows[0].timedone,
+                            dayBeforeYdaydHabitCount: dayBeforeYdaydHabitCount.rows[0].count,
+                            threeDaysBeforeDate: threeDaysBeforeDate.rows[0].timedone,
+                            threeDaysBeforeHabitCount: threeDaysBeforeHabitCount.rows[0].count,
+                            fourDaysBeforeDate: fourDaysBeforeDate.rows[0].timedone,
+                            fourDaysBeforeHabitCount: fourDaysBeforeHabitCount.rows[0].count,
+                            fiveDaysBeforeDate: fiveDaysBeforeDate.rows[0].timedone,
+                            fiveDaysBeforeHabitCount: fiveDaysBeforeHabitCount.rows[0].count
+                        }
+                    } else if (fourDaysBeforeDate.rows[0].timedone !== 'undefined') {
+                        graphObj = {
+                            todayDate: todayDate.rows[0].timedone,
+                            todayHabitCount: todayHabitCount.rows[0].count,
+                            yesterdayDate: yesterdayDate.rows[0].timedone,
+                            yesterdayHabitCount: yesterdayHabitCount.rows[0].count,
+                            dayBeforeYdayDate: dayBeforeYdayDate.rows[0].timedone,
+                            dayBeforeYdaydHabitCount: dayBeforeYdaydHabitCount.rows[0].count,
+                            threeDaysBeforeDate: threeDaysBeforeDate.rows[0].timedone,
+                            threeDaysBeforeHabitCount: threeDaysBeforeHabitCount.rows[0].count,
+                            fourDaysBeforeDate: fourDaysBeforeDate.rows[0].timedone,
+                            fourDaysBeforeHabitCount: fourDaysBeforeHabitCount.rows[0].count
+                        }
+                    } else if (threeDaysBeforeDate.rows[0].timedone !== 'undefined') {
+                        graphObj = {
+                            todayDate: todayDate.rows[0].timedone,
+                            todayHabitCount: todayHabitCount.rows[0].count,
+                            yesterdayDate: yesterdayDate.rows[0].timedone,
+                            yesterdayHabitCount: yesterdayHabitCount.rows[0].count,
+                            dayBeforeYdayDate: dayBeforeYdayDate.rows[0].timedone,
+                            dayBeforeYdaydHabitCount: dayBeforeYdaydHabitCount.rows[0].count,
+                            threeDaysBeforeDate: threeDaysBeforeDate.rows[0].timedone,
+                            threeDaysBeforeHabitCount: threeDaysBeforeHabitCount.rows[0].count
+                        }
+                    }
+
+                    res(graphObj)
                 }
 
             } catch (err) {
