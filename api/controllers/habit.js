@@ -65,6 +65,15 @@ async function updateHabitCounter(req, res) {
       }
 }
 
+async function getGraphData (req, res){
+    try {
+        const data = await Habit.getGraphData(req.params.email);
+        res.status(200).json(data)
+    } catch (err) {
+        res.status(500).send({ err })
+    }
+}
+
 
 module.exports = {
     getAllHabits,
@@ -73,4 +82,5 @@ module.exports = {
     getHabitsByEmail,
     getHabits,
     updateHabitCounter,
+    getGraphData
 }

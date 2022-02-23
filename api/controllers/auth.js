@@ -22,10 +22,10 @@ async function register (req, res) {
 
 async function login (req, res) {
     try {
-        const user = await User.findByEmail(req.body.email)
-        console.log(user)
-        //if(!user){ throw new Error('No user with this email') }
-        const authed = bcrypt.compareSync(req.body.password, user.passwd)
+        const user = await User.findByEmail(req.body.email) 
+        // if no user found gives 404 Not Found - error is catched at the very end
+        
+        try{const authed = bcrypt.compareSync(req.body.password, user.passwd)
         if (!!authed) {
             const payload = { username: user.username, email: user.email }
             const sendToken = (err, token) => {
@@ -35,14 +35,17 @@ async function login (req, res) {
                     token: "Bearer " + token,
                 });
             }
-            jwt.sign(payload, process.env.SECRET, { expiresIn: 60 }, sendToken);
+            jwt.sign(payload, process.env.SECRET, { expiresIn: "24h" }, sendToken);
             res.status(200);
         } else {
             throw new Error('User could not be authenticated')  
         }
+         } catch (err) {
+        res.status(401).json(err.message);
+        }
     } catch (err) {
-        console.log(err);
-        res.status(401).json({ err });
+    //console.log(err);
+    res.status(404).json({ err });
     }
 }
 
