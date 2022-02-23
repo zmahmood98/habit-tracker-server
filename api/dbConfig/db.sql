@@ -7,10 +7,9 @@ CREATE TABLE users (
     passwd VARCHAR(100) NOT NULL
 );
 
-INSERT INTO users (username, email, passwd) 
-VALUES
-('bill', 'bill@gmail.com','$2a$10$wx3Eylbd.bpWPeY/HIeRsO5eC9zejhFC2rIS4WO5POtfsx/TEAUOi'),
-('jon', 'jon@gmail.com', '$2a$10$aAOMhIa09Kcqk60szmO2KOiiFvQmYQrqG5zwtvxC1U/f0zlwosNve');
+INSERT INTO users (username, email, passwd) VALUES
+    ('bill', 'bill@gmail.com','$2a$10$wx3Eylbd.bpWPeY/HIeRsO5eC9zejhFC2rIS4WO5POtfsx/TEAUOi'),
+    ('jon', 'jon@gmail.com', '$2a$10$aAOMhIa09Kcqk60szmO2KOiiFvQmYQrqG5zwtvxC1U/f0zlwosNve');
 
 
 DROP TABLE IF EXISTS habit;
@@ -29,9 +28,9 @@ CREATE TABLE habit (
         ON DELETE SET NULL
 );
 
-INSERT INTO habit(habitDescription, frequency, currentFrequency, currentTime, currentStreak, maxStreak, user_id)
-("drink water", 8, 3, current_timestamp - INTERVAL '3 day', 3, 3, 1),
-("run 2k", 1, 0, current_timestamp - INTERVAL '2 day', 0, 1, 2);
+INSERT INTO habit(habitDescription, frequency, currentFrequency, currentTime, currentStreak, maxStreak, user_id) VALUES
+    ("drink water", 8, 3, current_timestamp - INTERVAL '3 day', 3, 3, 1),
+    ("run 2k", 1, 0, current_timestamp - INTERVAL '2 day', 0, 1, 2);
 
 
 
@@ -47,8 +46,14 @@ CREATE TABLE habitCount (
     completedStreak BOOLEAN
 );
 
-INSERT INTO habitCount(habit_id, timeDone, completedStreak)
-        --completed task 1 (drink water) 8 times yesterday
+INSERT INTO habitCount(habit_id, timeDone, completedStreak) VALUES
+
+        --completed task 1 three times today
+        (1, current_timestamp, FALSE),
+        (1, current_timestamp, FALSE),
+        (1, current_timestamp, FALSE),
+        
+        --completed task 1 8 times yesterday
         (1, current_timestamp - INTERVAL '1 day', FALSE),
         (1, current_timestamp - INTERVAL '1 day', FALSE),
         (1, current_timestamp - INTERVAL '1 day', FALSE),
@@ -76,4 +81,7 @@ INSERT INTO habitCount(habit_id, timeDone, completedStreak)
         (1, current_timestamp - INTERVAL '3 day', FALSE),
         (1, current_timestamp - INTERVAL '3 day', FALSE),
         (1, current_timestamp - INTERVAL '3 day', FALSE),
-        (1, current_timestamp - INTERVAL '3 day', FALSE);
+        (1, current_timestamp - INTERVAL '3 day', FALSE),
+
+        --completed habit 2 once two days ago (did not complete yesterday or today)
+        (2, current_timestamp - INTERVAL '2 day', FALSE);
