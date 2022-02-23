@@ -7,7 +7,7 @@ const habitController = require('../controllers/habit')
 
 router.get('/', verifyToken, habitController.getAllHabits)
 router.get('/:email',verifyToken, habitController.getHabitsByEmail)
-router.get('/:habit_id/:username', habitController.getHabits)
+router.get('/:habit_id/:username', habitController.getHabits) // uses .getHabitsPlusStreaks
 router.get('/graph-data/:email', habitController.getGraphData)
 router.post('/:username', habitController.create)
 router.post('/:username/habits/entries', habitController.updateHabitCounter)
