@@ -1,6 +1,6 @@
 services:
   api:
-    container_name: reinhabit_api
+    container_name: reinhabit_test_api
     environment: 
       - PGUSER=reinhabit
       - PGHOST=db
@@ -22,4 +22,4 @@ volumes:
   test_db:
 networks: 
   default:
-    name: debug_test
+    name: reinhabit_test
