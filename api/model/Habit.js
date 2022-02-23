@@ -141,8 +141,6 @@ class Habit {
                 const getUser = await db.query(SQL`SELECT user_id FROM users WHERE username = ${username};`)
 
                 const habitData = await db.query(SQL`SELECT * FROM habit WHERE user_id = ${parseInt(getUser.rows[0].user_id)} ORDER BY habit_id DESC;`)
-                
-                console.log(habitData.rows)
 
                 res(habitData.rows)
 
@@ -225,7 +223,6 @@ class Habit {
                     const threeDaysBeforeHabitCount = await db.query(SQL`SELECT COUNT(*) FROM habitCount WHERE timeDone::DATE = current_date - 3 AND habit_id = ${habitId.habit_id};`);
     
                     const fourDaysBeforeDate = await db.query(SQL`SELECT DISTINCT timeDone::DATE FROM habitCount WHERE timeDone::DATE = current_date - 4;`)
-                    console.log(fourDaysBeforeDate.rows)
     
                     const fourDaysBeforeHabitCount = await db.query(SQL`SELECT COUNT(*) FROM habitCount WHERE timeDone::DATE = current_date - 4 AND habit_id = ${habitId.habit_id};`);
     
@@ -237,63 +234,79 @@ class Habit {
     
                     const sixDaysBeforeHabitCount = await db.query(SQL`SELECT COUNT(*) FROM habitCount WHERE timeDone::DATE = current_date - 6 AND habit_id = ${habitId.habit_id};`);
 
-                    let graphObj
-                    if(sixDaysBeforeDate.rows[0].timedone !== 'undefined') {
-                        graphObj = {
-                            todayDate: todayDate.rows[0].timedone,
-                            todayHabitCount: todayHabitCount.rows[0].count,
-                            yesterdayDate: yesterdayDate.rows[0].timedone,
-                            yesterdayHabitCount: yesterdayHabitCount.rows[0].count,
-                            dayBeforeYdayDate: dayBeforeYdayDate.rows[0].timedone,
-                            dayBeforeYdaydHabitCount: dayBeforeYdaydHabitCount.rows[0].count,
-                            threeDaysBeforeDate: threeDaysBeforeDate.rows[0].timedone,
-                            threeDaysBeforeHabitCount: threeDaysBeforeHabitCount.rows[0].count,
-                            fourDaysBeforeDate: fourDaysBeforeDate.rows[0].timedone,
-                            fourDaysBeforeHabitCount: fourDaysBeforeHabitCount.rows[0].count,
-                            fiveDaysBeforeDate: fiveDaysBeforeDate.rows[0].timedone,
-                            fiveDaysBeforeHabitCount: fiveDaysBeforeHabitCount.rows[0].count,
-                            sixDaysBeforeDate: sixDaysBeforeDate.rows[0].timedone,
-                            sixDaysBeforeHabitCount: sixDaysBeforeHabitCount.rows[0].count
-                        }
-                    } else if (fiveDaysBeforeDate.rows[0].timedone !== 'undefined') {
-                        graphObj = {
-                            todayDate: todayDate.rows[0].timedone,
-                            todayHabitCount: todayHabitCount.rows[0].count,
-                            yesterdayDate: yesterdayDate.rows[0].timedone,
-                            yesterdayHabitCount: yesterdayHabitCount.rows[0].count,
-                            dayBeforeYdayDate: dayBeforeYdayDate.rows[0].timedone,
-                            dayBeforeYdaydHabitCount: dayBeforeYdaydHabitCount.rows[0].count,
-                            threeDaysBeforeDate: threeDaysBeforeDate.rows[0].timedone,
-                            threeDaysBeforeHabitCount: threeDaysBeforeHabitCount.rows[0].count,
-                            fourDaysBeforeDate: fourDaysBeforeDate.rows[0].timedone,
-                            fourDaysBeforeHabitCount: fourDaysBeforeHabitCount.rows[0].count,
-                            fiveDaysBeforeDate: fiveDaysBeforeDate.rows[0].timedone,
-                            fiveDaysBeforeHabitCount: fiveDaysBeforeHabitCount.rows[0].count
-                        }
-                    } else if (fourDaysBeforeDate.rows[0].timedone !== 'undefined') {
-                        graphObj = {
-                            todayDate: todayDate.rows[0].timedone,
-                            todayHabitCount: todayHabitCount.rows[0].count,
-                            yesterdayDate: yesterdayDate.rows[0].timedone,
-                            yesterdayHabitCount: yesterdayHabitCount.rows[0].count,
-                            dayBeforeYdayDate: dayBeforeYdayDate.rows[0].timedone,
-                            dayBeforeYdaydHabitCount: dayBeforeYdaydHabitCount.rows[0].count,
-                            threeDaysBeforeDate: threeDaysBeforeDate.rows[0].timedone,
-                            threeDaysBeforeHabitCount: threeDaysBeforeHabitCount.rows[0].count,
-                            fourDaysBeforeDate: fourDaysBeforeDate.rows[0].timedone,
-                            fourDaysBeforeHabitCount: fourDaysBeforeHabitCount.rows[0].count
-                        }
-                    } else if (threeDaysBeforeDate.rows[0].timedone !== 'undefined') {
-                        graphObj = {
-                            todayDate: todayDate.rows[0].timedone,
-                            todayHabitCount: todayHabitCount.rows[0].count,
-                            yesterdayDate: yesterdayDate.rows[0].timedone,
-                            yesterdayHabitCount: yesterdayHabitCount.rows[0].count,
-                            dayBeforeYdayDate: dayBeforeYdayDate.rows[0].timedone,
-                            dayBeforeYdaydHabitCount: dayBeforeYdaydHabitCount.rows[0].count,
-                            threeDaysBeforeDate: threeDaysBeforeDate.rows[0].timedone,
-                            threeDaysBeforeHabitCount: threeDaysBeforeHabitCount.rows[0].count
-                        }
+                    let graphObj = {}
+
+                    if(sixDaysBeforeDate.rows.length !== 0) {
+                        graphObj.todayDate = todayDate.rows[0].timedone,
+                        graphObj.todayHabitCount = todayHabitCount.rows[0].count,
+                        graphObj.yesterdayDate = yesterdayDate.rows[0].timedone,
+                        graphObj.yesterdayHabitCount = yesterdayHabitCount.rows[0].count,
+                        graphObj.dayBeforeYdayDate = dayBeforeYdayDate.rows[0].timedone,
+                        graphObj.dayBeforeYdaydHabitCount = dayBeforeYdaydHabitCount.rows[0].count,
+                        graphObj.threeDaysBeforeDate = threeDaysBeforeDate.rows[0].timedone,
+                        graphObj.threeDaysBeforeHabitCount = threeDaysBeforeHabitCount.rows[0].count,
+                        graphObj.fourDaysBeforeDate = fourDaysBeforeDate.rows[0].timedone,
+                        graphObj.fourDaysBeforeHabitCount = fourDaysBeforeHabitCount.rows[0].count,
+                        graphObj.fiveDaysBeforeDate = fiveDaysBeforeDate.rows[0].timedone,
+                        graphObj.fiveDaysBeforeHabitCount = fiveDaysBeforeHabitCount.rows[0].count,
+                        graphObj.sixDaysBeforeDate = sixDaysBeforeDate.rows[0].timedone,
+                        graphObj.sixDaysBeforeHabitCount = sixDaysBeforeHabitCount.rows[0].count
+                        
+                    } else if (fiveDaysBeforeDate.rows.length !== 0) {
+                        graphObj.todayDate = todayDate.rows[0].timedone,
+                        graphObj.todayHabitCount = todayHabitCount.rows[0].count,
+                        graphObj.yesterdayDate = yesterdayDate.rows[0].timedone,
+                        graphObj.yesterdayHabitCount = yesterdayHabitCount.rows[0].count,
+                        graphObj.dayBeforeYdayDate = dayBeforeYdayDate.rows[0].timedone,
+                        graphObj.dayBeforeYdaydHabitCount = dayBeforeYdaydHabitCount.rows[0].count,
+                        graphObj.threeDaysBeforeDate = threeDaysBeforeDate.rows[0].timedone,
+                        graphObj.threeDaysBeforeHabitCount = threeDaysBeforeHabitCount.rows[0].count,
+                        graphObj.fourDaysBeforeDate = fourDaysBeforeDate.rows[0].timedone,
+                        graphObj.fourDaysBeforeHabitCount = fourDaysBeforeHabitCount.rows[0].count,
+                        graphObj.fiveDaysBeforeDate = fiveDaysBeforeDate.rows[0].timedone,
+                        graphObj.fiveDaysBeforeHabitCount = fiveDaysBeforeHabitCount.rows[0].count
+                        
+                    } else if (fourDaysBeforeDate.rows.length !== 0) {
+                        
+                        graphObj.todayDate = todayDate.rows[0].timedone,
+                        graphObj.todayHabitCount = todayHabitCount.rows[0].count,
+                        graphObj.yesterdayDate = yesterdayDate.rows[0].timedone,
+                        graphObj.yesterdayHabitCount = yesterdayHabitCount.rows[0].count,
+                        graphObj.dayBeforeYdayDate = dayBeforeYdayDate.rows[0].timedone,
+                        graphObj.dayBeforeYdaydHabitCount = dayBeforeYdaydHabitCount.rows[0].count,
+                        graphObj.threeDaysBeforeDate = threeDaysBeforeDate.rows[0].timedone,
+                        graphObj.threeDaysBeforeHabitCount = threeDaysBeforeHabitCount.rows[0].count,
+                        graphObj.fourDaysBeforeDate = fourDaysBeforeDate.rows[0].timedone,
+                        graphObj.fourDaysBeforeHabitCount = fourDaysBeforeHabitCount.rows[0].count
+                        
+                    } else if (threeDaysBeforeDate.rows.length !== 0) {
+                        graphObj.todayDate = todayDate.rows[0].timedone,
+                        graphObj.todayHabitCount = todayHabitCount.rows[0].count,
+                        graphObj.yesterdayDate = yesterdayDate.rows[0].timedone,
+                        graphObj.yesterdayHabitCount = yesterdayHabitCount.rows[0].count,
+                        graphObj.dayBeforeYdayDate = dayBeforeYdayDate.rows[0].timedone,
+                        graphObj.dayBeforeYdaydHabitCount = dayBeforeYdaydHabitCount.rows[0].count,
+                        graphObj.threeDaysBeforeDate = threeDaysBeforeDate.rows[0].timedone,
+                        graphObj.threeDaysBeforeHabitCount = threeDaysBeforeHabitCount.rows[0].count
+                        
+                    } else if (dayBeforeYdayDate.rows.length !== 0) {
+                        graphObj.todayDate = todayDate.rows[0].timedone,
+                        graphObj.todayHabitCount = todayHabitCount.rows[0].count,
+                        graphObj.yesterdayDate = yesterdayDate.rows[0].timedone,
+                        graphObj.yesterdayHabitCount = yesterdayHabitCount.rows[0].count,
+                        graphObj.dayBeforeYdayDate = dayBeforeYdayDate.rows[0].timedone,
+                        graphObj.dayBeforeYdaydHabitCount = dayBeforeYdaydHabitCount.rows[0].count
+
+                    } else if (yesterdayDate.rows.length !== 0) {
+                        graphObj.todayDate = todayDate.rows[0].timedone,
+                        graphObj.todayHabitCount = todayHabitCount.rows[0].count,
+                        graphObj.yesterdayDate = yesterdayDate.rows[0].timedone,
+                        graphObj.yesterdayHabitCount = yesterdayHabitCount.rows[0].count
+
+                    } else {
+                        graphObj.todayDate = todayDate.rows[0].timedone,
+                        graphObj.todayHabitCount = todayHabitCount.rows[0].count
+
                     }
 
                     res(graphObj)
