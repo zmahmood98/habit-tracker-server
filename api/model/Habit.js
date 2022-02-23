@@ -147,9 +147,7 @@ class Habit {
 
                 const habitData = await db.query(SQL`SELECT * FROM habit WHERE user_id = ${parseInt(getUser.rows[0].user_id)} ORDER BY habit_id DESC;`)
 
-                console.log(habitData)
-
-                res(habitData)
+                res(habitData.rows)
 
             } catch (err) {
                 rej (`There was an error: ${err}`)
@@ -188,9 +186,11 @@ class Habit {
             // if number of todays entries in habitCount is equal to the users desired frequency then increase the current streak by 1
             else if(parseInt(entries.rows[0].count) == parseInt(dFrequency.rows[0].frequency)){
              
-                await db.query(SQL`UPDATE habit SET currrentStreak = currentStreak + 1 WHERE habit_id = ${data.habit_id};`);
+                await db.query(SQL`UPDATE habit SET currentStreak = currentStreak + 1 WHERE habit_id = ${data.habit_id};`);
                 // need to disable button after this
             }
+
+            
          
             res('Everything up to date!')
 
