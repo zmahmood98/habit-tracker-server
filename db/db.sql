@@ -92,5 +92,5 @@ INSERT INTO habitCount(habit_id, timeDone, completedStreak) VALUES
         --completed habit 2 once two days ago (did not complete yesterday or today)
         (2, current_timestamp - INTERVAL '2 day', FALSE),
 
-        (2, current_timestamp, FALSE),
-        (2, current_timestamp, FALSE);
+        (3, current_timestamp, FALSE),
+        (3, current_timestamp, FALSE);
