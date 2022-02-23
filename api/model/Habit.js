@@ -19,9 +19,6 @@ class Habit {
                 let result = await db.query(SQL`SELECT * FROM habit`);
 
                 let habits = await  result.rows.map(r => new Habit({habit_id: r.habit_id, habitDescription: r.habitdescription, frequency: r.frequency, currentFrequency: r.currentfrequency, currentTime: r.currenttime, currentStreak: r.currentstreak, maxStreak: r.maxstreak  }))
-                console.log("thsi is the get all habits table result response", result.rows)
-                console.log("this is the habit that is getting set", habits)
-
 
                 res(habits)
 
@@ -71,8 +68,6 @@ class Habit {
                 const allHabits = await db.query(SQL`SELECT * FROM habit INNER JOIN users ON (habit.user_id = users.user_id) AND (users.email = ${email}) ORDER BY habit_id DESC;`);
 
                 let habits = allHabits.rows.map(r => new Habit({habit_id: r.habit_id, habitDescription: r.habitdescription, frequency: r.frequency, currentFrequency: r.currentfrequency, currentTime: r.currenttime, currentStreak: r.currentstreak, maxStreak: r.maxstreak  }))
-
-                console.log("these are the habits that are getting sent back", habits)
 
                 res(habits)
 
@@ -147,8 +142,6 @@ class Habit {
 
                 const habitData = await db.query(SQL`SELECT * FROM habit WHERE user_id = ${parseInt(getUser.rows[0].user_id)} ORDER BY habit_id DESC;`)
 
-                console.log(habitData)
-
                 res(habitData)
 
             } catch (err) {
@@ -199,6 +192,54 @@ class Habit {
           }
         });
       }
+
+      static getGraphData(email) {
+        return new Promise(async (res, rej) => {
+            try {
+
+                const user_id = await db.query(SQL`SELECT user_id FROM users WHERE email = ${email};`)
+
+                // all rows in habit table for a specific user in decending order
+                const userHabitIds = await db.query(SQL`SELECT habit_id FROM habit WHERE user_id = ${user_id.rows[0].user_id} ORDER BY habit_id DESC;`);
+
+                for(let habitId of userHabitIds.rows) {
+
+                    const todayDate = Date(db.query(SQL`SELECT DISTINCT timeDone::DATE FROM habitCount WHERE timeDone::DATE = current_date;`))
+    
+                    const todayHabitCount = await db.query(SQL`SELECT COUNT(*) FROM habitCount WHERE timeDone::DATE = current_date AND habit_id = ${habitId.habit_id};`);
+    
+                    const yesterdayDate = await db.query(SQL`SELECT DISTINCT timeDone::DATE FROM habitCount WHERE timeDone::DATE = current_date - 1;`)
+    
+                    const yesterdayHabitCount = await db.query(SQL`SELECT COUNT(*) FROM habitCount WHERE timeDone::DATE = current_date - 1 AND habit_id = ${habitId.habit_id};`);
+    
+                    const dayBeforeYdayDate = await db.query(SQL`SELECT DISTINCT timeDone::DATE FROM habitCount WHERE timeDone::DATE = current_date - 2;`)
+    
+                    const dayBeforeYdaydHabitCount = await db.query(SQL`SELECT COUNT(*) FROM habitCount WHERE timeDone::DATE = current_date - 2 AND habit_id = ${habitId.habit_id};`);
+    
+                    const threeDaysBeforeDate = await db.query(SQL`SELECT DISTINCT timeDone::DATE FROM habitCount WHERE timeDone::DATE = current_date - 3;`)
+    
+                    const threeDaysBeforeHabitCount = await db.query(SQL`SELECT COUNT(*) FROM habitCount WHERE timeDone::DATE = current_date - 3 AND habit_id = ${habitId.habit_id};`);
+    
+                    const fourDaysBeforeDate = await db.query(SQL`SELECT DISTINCT timeDone::DATE FROM habitCount WHERE timeDone::DATE = current_date - 4;`)
+    
+                    const fourDaysBeforeHabitCount = await db.query(SQL`SELECT COUNT(*) FROM habitCount WHERE timeDone::DATE = current_date - 4 AND habit_id = ${habitId.habit_id};`);
+    
+                    const fiveDaysBeforeDate = await db.query(SQL`SELECT DISTINCT timeDone::DATE FROM habitCount WHERE timeDone::DATE = current_date - 5;`)
+    
+                    const fiveDaysBeforeHabitCount = await db.query(SQL`SELECT COUNT(*) FROM habitCount WHERE timeDone::DATE = current_date - 5 AND habit_id = ${habitId.habit_id};`);
+    
+                    const sixDaysBeforeDate = await db.query(SQL`SELECT DISTINCT timeDone::DATE FROM habitCount WHERE timeDone::DATE = current_date - 6;`)
+    
+                    const sixDaysBeforeHabitCount = await db.query(SQL`SELECT COUNT(*) FROM habitCount WHERE timeDone::DATE = current_date - 6 AND habit_id = ${habitId.habit_id};`);
+
+                    res([todayDate, todayHabitCount])
+                }
+
+            } catch (err) {
+                rej(`There was an error retrieving that graph data: ${err}`)
+            }
+        })
+    }
 }
 
 module.exports = { Habit }
