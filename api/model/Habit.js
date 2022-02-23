@@ -141,6 +141,8 @@ class Habit {
                 const getUser = await db.query(SQL`SELECT user_id FROM users WHERE username = ${username};`)
 
                 const habitData = await db.query(SQL`SELECT * FROM habit WHERE user_id = ${parseInt(getUser.rows[0].user_id)} ORDER BY habit_id DESC;`)
+                
+                console.log(habitData.rows)
 
                 res(habitData.rows)
 
