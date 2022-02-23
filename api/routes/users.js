@@ -5,6 +5,6 @@ const { verifyToken } = require('../middleware/auth')
 const userController = require('../controllers/user')
 
 router.get('/', userController.index)
-router.get('/:name', verifyToken, userController.findByName)
+router.get('/:username', verifyToken, userController.findByName)
 
 module.exports = router;
