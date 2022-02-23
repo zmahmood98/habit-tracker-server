@@ -36,8 +36,6 @@ describe('user endpoints', () => {
         expect(res.statusCode).toEqual(403);
     }) 
 
-
-
     it('should return a single user by name', async () => {
         const res = await request(api).get('/users/jon').set('Authorization', `Bearer ${token}`);
         expect(res.statusCode).toEqual(200);
