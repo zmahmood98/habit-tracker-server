@@ -7,7 +7,6 @@ CREATE TABLE users (
     passwd VARCHAR(100) NOT NULL
 );
 
-
 INSERT INTO users (username, email, passwd) 
 VALUES
 ('bill', 'bill@gmail.com','$2a$10$wx3Eylbd.bpWPeY/HIeRsO5eC9zejhFC2rIS4WO5POtfsx/TEAUOi'),
@@ -30,7 +29,6 @@ CREATE TABLE habit (
         REFERENCES users(user_id)
         ON DELETE SET NULL
 );
-
 
 INSERT INTO habit (habitDescription, frequency, currentFrequency, currentTime, currentStreak, maxStreak, user_id) VALUES
 ('drink water', 8, 3, current_timestamp - INTERVAL '3 days', 3, 3, 1),
