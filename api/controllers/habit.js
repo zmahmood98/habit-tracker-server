@@ -44,9 +44,9 @@ async function getHabits (req, res){
     try {
         const {username} = req.params
         const getData = await Habit.getHabitsPlusStreaks(username)
-        res.status(201).json(getData)
+        res.status(200).json(getData)
     } catch (err) {
-        res.status(403).send({err: err})
+        res.status(404).send({err: err})
     }
 }
 
