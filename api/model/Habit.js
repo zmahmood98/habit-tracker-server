@@ -51,8 +51,8 @@ class Habit {
     static deleteHabit(id) {
         return new Promise(async (res, rej) => {
             try {
-                await db.query(SQL`DELETE FROM habit WHERE habit_id = ${id};`)
-
+                let deleted = await db.query(SQL`DELETE FROM habit WHERE habit_id = ${id};`)
+                if(deleted.rowCount === 0){throw new Error(`Habit ${id} does not exists`)}
                 res('Habit deleted')
 
             } catch (err) {
@@ -196,10 +196,9 @@ class Habit {
       }
 
 
+
     // Get graph data by email
       static getGraphData(email) {
-        return new Promise(async (res, rej) => {
-            try {
 
                 const userid = await db.query(SQL`SELECT user_id FROM users WHERE email = ${email};`)
 
@@ -295,5 +294,7 @@ class Habit {
         })
     }
 }
+
+
 
 module.exports = { Habit }

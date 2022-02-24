@@ -50,16 +50,16 @@ describe('habit endpoints', () => {
         })
 
 
-     // habits/:id/:username (uses .getHabitsPlusStreaks)
+     // /habits/habits/:id/:username (uses .getHabitsPlusStreaks)
 
      it('should show habits and streaks by username with status code 200', async () => {
-        const res = await request(api).get('/habits/0/bill')
+        const res = await request(api).get('/habits/habits/0/bill')
         //.set('Authorization', `Bearer ${token}`);
         expect(res.statusCode).toEqual(200);
         })
 
     it('returns 404 - Not Found if username not in DB', async () => {
-        const res = await request(api).get('/habits/0/billly')
+        const res = await request(api).get('/habits/habits/0/billly')
         //.set('Authorization', `Bearer ${token}`);
         expect(res.statusCode).toEqual(404);
         })
@@ -99,7 +99,7 @@ describe('habit endpoints', () => {
     
     /// router.post('/:username/habits/entries', habitController.updateHabitCounter)
 
-    let updateHabitObj = {"username":"bill", "habit_id":"1"}
+    let updateHabitObj = {"username":"jon", "habit_id":"2"}
 
     it('return 201 - updates habit by username', async () => {
             const res = await request(api).post('/habits/bill/habits/entries').send(updateHabitObj)
@@ -122,12 +122,12 @@ describe('habit endpoints', () => {
         })
 
     it('returns 403 - forbidden - cannot delete without auth', async () => {
-            const res = await request(api).delete('/habits/delete/10').send(updateHabitObj)
+            const res = await request(api).delete('/habits/delete/10')
             expect(res.statusCode).toEqual(403);
             })
 
     it('returns 500 - cannot delete habit that does not exist', async () => {
-        const res = await request(api).delete('/habits/delete/10').send(updateHabitObj).set('Authorization', `Bearer ${token}`);
+        const res = await request(api).delete('/habits/delete/100').set('Authorization', `Bearer ${token}`);
         expect(res.statusCode).toEqual(500);
         })
 
