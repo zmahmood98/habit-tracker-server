@@ -195,6 +195,17 @@ class Habit {
         });
       }
 
+      static getGraphData(habitid) {
+        return new Promise(async (res, rej) => {
+            try {
+
+                const habitIds = await db.query(SQL`SELECT habit_id FROM habit WHERE habit_id = ${habitid};`);
+                
+
+            } catch (err) {
+
+            }})}
+
       static getGraphData(email) {
         return new Promise(async (res, rej) => {
             try {
@@ -204,7 +215,11 @@ class Habit {
                 // all rows in habit table for a specific user
                 const userHabitIds = await db.query(SQL`SELECT habit_id FROM habit WHERE user_id = ${userid.rows[0].user_id};`);
 
-                for(let habitId of userHabitIds.rows) {
+                let arr =[]
+
+                let habitId =  userHabitIds.rows[0]
+
+                // for(let habitId of userHabitIds.rows) {
 
                     const todayDate = await db.query(SQL`SELECT DISTINCT timeDone::DATE FROM habitCount WHERE timeDone::DATE = current_date;`)
     
@@ -216,7 +231,7 @@ class Habit {
     
                     const dayBeforeYdayDate = await db.query(SQL`SELECT DISTINCT timeDone::DATE FROM habitCount WHERE timeDone::DATE = current_date - 2;`)
     
-                    const dayBeforeYdaydHabitCount = await db.query(SQL`SELECT COUNT(*) FROM habitCount WHERE timeDone::DATE = current_date - 2 AND habit_id = ${habitId.habit_id};`);
+                    const dayBeforeYdayHabitCount = await db.query(SQL`SELECT COUNT(*) FROM habitCount WHERE timeDone::DATE = current_date - 2 AND habit_id = ${habitId.habit_id};`);
     
                     const threeDaysBeforeDate = await db.query(SQL`SELECT DISTINCT timeDone::DATE FROM habitCount WHERE timeDone::DATE = current_date - 3;`)
     
@@ -234,83 +249,209 @@ class Habit {
     
                     const sixDaysBeforeHabitCount = await db.query(SQL`SELECT COUNT(*) FROM habitCount WHERE timeDone::DATE = current_date - 6 AND habit_id = ${habitId.habit_id};`);
 
-                    let graphObj = {}
+                    
 
-                    if(sixDaysBeforeDate.rows.length !== 0) {
-                        graphObj.todayDate = todayDate.rows[0].timedone,
-                        graphObj.todayHabitCount = todayHabitCount.rows[0].count,
-                        graphObj.yesterdayDate = yesterdayDate.rows[0].timedone,
-                        graphObj.yesterdayHabitCount = yesterdayHabitCount.rows[0].count,
-                        graphObj.dayBeforeYdayDate = dayBeforeYdayDate.rows[0].timedone,
-                        graphObj.dayBeforeYdaydHabitCount = dayBeforeYdaydHabitCount.rows[0].count,
-                        graphObj.threeDaysBeforeDate = threeDaysBeforeDate.rows[0].timedone,
-                        graphObj.threeDaysBeforeHabitCount = threeDaysBeforeHabitCount.rows[0].count,
-                        graphObj.fourDaysBeforeDate = fourDaysBeforeDate.rows[0].timedone,
-                        graphObj.fourDaysBeforeHabitCount = fourDaysBeforeHabitCount.rows[0].count,
-                        graphObj.fiveDaysBeforeDate = fiveDaysBeforeDate.rows[0].timedone,
-                        graphObj.fiveDaysBeforeHabitCount = fiveDaysBeforeHabitCount.rows[0].count,
-                        graphObj.sixDaysBeforeDate = sixDaysBeforeDate.rows[0].timedone,
-                        graphObj.sixDaysBeforeHabitCount = sixDaysBeforeHabitCount.rows[0].count
+                    // if(sixDaysBeforeDate.rows.length !== 0) {
+                    //     graphObj = {
+                    //         [`todayDate_${JSON.stringify(habitId.habit_id)}`]: todayDate.rows[0].timedone,
+                    //         [`todayHabitCount_${JSON.stringify(habitId.habit_id)}`]: todayHabitCount.rows[0].count,
+                    //         [`yesterdayDate_${JSON.stringify(habitId.habit_id)}`]: yesterdayDate.rows[0].timedone,
+                    //         [`yesterdayHabitCount_${JSON.stringify(habitId.habit_id)}`]: yesterdayHabitCount.rows[0].count,
+                    //         [`dayBeforeYdayDate_${JSON.stringify(habitId.habit_id)}`]: dayBeforeYdayDate.rows[0].timedone,
+                    //         [`dayBeforeYdayDate_${JSON.stringify(habitId.habit_id)}`]: dayBeforeYdayDate.rows[0].count,
+                    //         [`threeDaysBeforeDate_${JSON.stringify(habitId.habit_id)}`]: threeDaysBeforeDate.rows[0].timedone,
+                    //         [`threeDaysBeforeHabitCount_${JSON.stringify(habitId.habit_id)}`]: threeDaysBeforeHabitCount.rows[0].count,
+                    //         [`fourDaysBeforeDate_${JSON.stringify(habitId.habit_id)}`]: fourDaysBeforeDate.rows[0].timedone,
+                    //         [`fourDaysBeforeHabitCount_${JSON.stringify(habitId.habit_id)}`]: fourDaysBeforeHabitCount.rows[0].count,
+                    //         [`fiveDaysBeforeDate_${JSON.stringify(habitId.habit_id)}`]: fiveDaysBeforeDate.rows[0].timedone,
+                    //         [`fiveDaysBeforeHabitCount_${JSON.stringify(habitId.habit_id)}`]: fiveDaysBeforeHabitCount.rows[0].count,
+                    //         [`sixDaysBeforeDate_${JSON.stringify(habitId.habit_id)}`]: sixDaysBeforeDate.rows[0].timedone,
+                    //         [`sixDaysBeforeHabitCount_${JSON.stringify(habitId.habit_id)}`]: sixDaysBeforeHabitCount.rows[0].count
+                    //     }
                         
-                    } else if (fiveDaysBeforeDate.rows.length !== 0) {
-                        graphObj.todayDate = todayDate.rows[0].timedone,
-                        graphObj.todayHabitCount = todayHabitCount.rows[0].count,
-                        graphObj.yesterdayDate = yesterdayDate.rows[0].timedone,
-                        graphObj.yesterdayHabitCount = yesterdayHabitCount.rows[0].count,
-                        graphObj.dayBeforeYdayDate = dayBeforeYdayDate.rows[0].timedone,
-                        graphObj.dayBeforeYdaydHabitCount = dayBeforeYdaydHabitCount.rows[0].count,
-                        graphObj.threeDaysBeforeDate = threeDaysBeforeDate.rows[0].timedone,
-                        graphObj.threeDaysBeforeHabitCount = threeDaysBeforeHabitCount.rows[0].count,
-                        graphObj.fourDaysBeforeDate = fourDaysBeforeDate.rows[0].timedone,
-                        graphObj.fourDaysBeforeHabitCount = fourDaysBeforeHabitCount.rows[0].count,
-                        graphObj.fiveDaysBeforeDate = fiveDaysBeforeDate.rows[0].timedone,
-                        graphObj.fiveDaysBeforeHabitCount = fiveDaysBeforeHabitCount.rows[0].count
+                    // } else if (fiveDaysBeforeDate.rows.length !== 0) {
+                    //     graphObj = {
+                    //         [`todayDate_${JSON.stringify(habitId.habit_id)}`]: todayDate.rows[0].timedone,
+                    //         [`todayHabitCount_${JSON.stringify(habitId.habit_id)}`]: todayHabitCount.rows[0].count,
+                    //         [`yesterdayDate_${JSON.stringify(habitId.habit_id)}`]: yesterdayDate.rows[0].timedone,
+                    //         [`yesterdayHabitCount_${JSON.stringify(habitId.habit_id)}`]: yesterdayHabitCount.rows[0].count,
+                    //         [`dayBeforeYdayDate_${JSON.stringify(habitId.habit_id)}`]: dayBeforeYdayDate.rows[0].timedone,
+                    //         [`dayBeforeYdayDate_${JSON.stringify(habitId.habit_id)}`]: dayBeforeYdayDate.rows[0].count,
+                    //         [`threeDaysBeforeDate_${JSON.stringify(habitId.habit_id)}`]: threeDaysBeforeDate.rows[0].timedone,
+                    //         [`threeDaysBeforeHabitCount_${JSON.stringify(habitId.habit_id)}`]: threeDaysBeforeHabitCount.rows[0].count,
+                    //         [`fourDaysBeforeDate_${JSON.stringify(habitId.habit_id)}`]: fourDaysBeforeDate.rows[0].timedone,
+                    //         [`fourDaysBeforeHabitCount_${JSON.stringify(habitId.habit_id)}`]: fourDaysBeforeHabitCount.rows[0].count,
+                    //         [`fiveDaysBeforeDate_${JSON.stringify(habitId.habit_id)}`]: fiveDaysBeforeDate.rows[0].timedone,
+                    //         [`fiveDaysBeforeHabitCount_${JSON.stringify(habitId.habit_id)}`]: fiveDaysBeforeHabitCount.rows[0].count
+                    //     }
                         
-                    } else if (fourDaysBeforeDate.rows.length !== 0) {
+                    // } else if (fourDaysBeforeDate.rows.length !== 0) {
                         
-                        graphObj.todayDate = todayDate.rows[0].timedone,
-                        graphObj.todayHabitCount = todayHabitCount.rows[0].count,
-                        graphObj.yesterdayDate = yesterdayDate.rows[0].timedone,
-                        graphObj.yesterdayHabitCount = yesterdayHabitCount.rows[0].count,
-                        graphObj.dayBeforeYdayDate = dayBeforeYdayDate.rows[0].timedone,
-                        graphObj.dayBeforeYdaydHabitCount = dayBeforeYdaydHabitCount.rows[0].count,
-                        graphObj.threeDaysBeforeDate = threeDaysBeforeDate.rows[0].timedone,
-                        graphObj.threeDaysBeforeHabitCount = threeDaysBeforeHabitCount.rows[0].count,
-                        graphObj.fourDaysBeforeDate = fourDaysBeforeDate.rows[0].timedone,
-                        graphObj.fourDaysBeforeHabitCount = fourDaysBeforeHabitCount.rows[0].count
+                    //     graphObj = {
+                    //         [`todayDate_${JSON.stringify(habitId.habit_id)}`]: todayDate.rows[0].timedone,
+                    //         [`todayHabitCount_${JSON.stringify(habitId.habit_id)}`]: todayHabitCount.rows[0].count,
+                    //         [`yesterdayDate_${JSON.stringify(habitId.habit_id)}`]: yesterdayDate.rows[0].timedone,
+                    //         [`yesterdayHabitCount_${JSON.stringify(habitId.habit_id)}`]: yesterdayHabitCount.rows[0].count,
+                    //         [`dayBeforeYdayDate_${JSON.stringify(habitId.habit_id)}`]: dayBeforeYdayDate.rows[0].timedone,
+                    //         [`dayBeforeYdayDate_${JSON.stringify(habitId.habit_id)}`]: dayBeforeYdayDate.rows[0].count,
+                    //         [`threeDaysBeforeDate_${JSON.stringify(habitId.habit_id)}`]: threeDaysBeforeDate.rows[0].timedone,
+                    //         [`threeDaysBeforeHabitCount_${JSON.stringify(habitId.habit_id)}`]: threeDaysBeforeHabitCount.rows[0].count,
+                    //         [`fourDaysBeforeDate_${JSON.stringify(habitId.habit_id)}`]: fourDaysBeforeDate.rows[0].timedone,
+                    //         [`fourDaysBeforeHabitCount_${JSON.stringify(habitId.habit_id)}`]: fourDaysBeforeHabitCount.rows[0].count
+                    //     }
                         
-                    } else if (threeDaysBeforeDate.rows.length !== 0) {
-                        graphObj.todayDate = todayDate.rows[0].timedone,
-                        graphObj.todayHabitCount = todayHabitCount.rows[0].count,
-                        graphObj.yesterdayDate = yesterdayDate.rows[0].timedone,
-                        graphObj.yesterdayHabitCount = yesterdayHabitCount.rows[0].count,
-                        graphObj.dayBeforeYdayDate = dayBeforeYdayDate.rows[0].timedone,
-                        graphObj.dayBeforeYdaydHabitCount = dayBeforeYdaydHabitCount.rows[0].count,
-                        graphObj.threeDaysBeforeDate = threeDaysBeforeDate.rows[0].timedone,
-                        graphObj.threeDaysBeforeHabitCount = threeDaysBeforeHabitCount.rows[0].count
+                    // } else if (threeDaysBeforeDate.rows.length !== 0) {
+                    //     graphObj = {
+                    //         [`todayDate_${JSON.stringify(habitId.habit_id)}`]: todayDate.rows[0].timedone,
+                    //         [`todayHabitCount_${JSON.stringify(habitId.habit_id)}`]: todayHabitCount.rows[0].count,
+                    //         [`yesterdayDate_${JSON.stringify(habitId.habit_id)}`]: yesterdayDate.rows[0].timedone,
+                    //         [`yesterdayHabitCount_${JSON.stringify(habitId.habit_id)}`]: yesterdayHabitCount.rows[0].count,
+                    //         [`dayBeforeYdayDate_${JSON.stringify(habitId.habit_id)}`]: dayBeforeYdayDate.rows[0].timedone,
+                    //         [`dayBeforeYdayDate_${JSON.stringify(habitId.habit_id)}`]: dayBeforeYdayDate.rows[0].count,
+                    //         [`threeDaysBeforeDate_${JSON.stringify(habitId.habit_id)}`]: threeDaysBeforeDate.rows[0].timedone,
+                    //         [`threeDaysBeforeHabitCount_${JSON.stringify(habitId.habit_id)}`]: threeDaysBeforeHabitCount.rows[0].count
+                    //     }
                         
-                    } else if (dayBeforeYdayDate.rows.length !== 0) {
-                        graphObj.todayDate = todayDate.rows[0].timedone,
-                        graphObj.todayHabitCount = todayHabitCount.rows[0].count,
-                        graphObj.yesterdayDate = yesterdayDate.rows[0].timedone,
-                        graphObj.yesterdayHabitCount = yesterdayHabitCount.rows[0].count,
-                        graphObj.dayBeforeYdayDate = dayBeforeYdayDate.rows[0].timedone,
-                        graphObj.dayBeforeYdaydHabitCount = dayBeforeYdaydHabitCount.rows[0].count
+                    // } else if (dayBeforeYdayDate.rows.length !== 0) {
+                    //     graphObj = {
+                    //         [`todayDate_${JSON.stringify(habitId.habit_id)}`]: todayDate.rows[0].timedone,
+                    //         [`todayHabitCount_${JSON.stringify(habitId.habit_id)}`]: todayHabitCount.rows[0].count,
+                    //         [`yesterdayDate_${JSON.stringify(habitId.habit_id)}`]: yesterdayDate.rows[0].timedone,
+                    //         [`yesterdayHabitCount_${JSON.stringify(habitId.habit_id)}`]: yesterdayHabitCount.rows[0].count,
+                    //         [`dayBeforeYdayDate_${JSON.stringify(habitId.habit_id)}`]: dayBeforeYdayDate.rows[0].timedone,
+                    //         [`dayBeforeYdayDate_${JSON.stringify(habitId.habit_id)}`]: dayBeforeYdayDate.rows[0].count
+                    //     }
 
-                    } else if (yesterdayDate.rows.length !== 0) {
-                        graphObj.todayDate = todayDate.rows[0].timedone,
-                        graphObj.todayHabitCount = todayHabitCount.rows[0].count,
-                        graphObj.yesterdayDate = yesterdayDate.rows[0].timedone,
-                        graphObj.yesterdayHabitCount = yesterdayHabitCount.rows[0].count
+                    // } else if (yesterdayDate.rows.length !== 0) {
+                    //     graphObj = {
+                    //         [`todayDate_${JSON.stringify(habitId.habit_id)}`]: todayDate.rows[0].timedone,
+                    //         [`todayHabitCount_${JSON.stringify(habitId.habit_id)}`]: todayHabitCount.rows[0].count,
+                    //         [`yesterdayDate_${JSON.stringify(habitId.habit_id)}`]: yesterdayDate.rows[0].timedone,
+                    //         [`yesterdayHabitCount_${JSON.stringify(habitId.habit_id)}`]: yesterdayHabitCount.rows[0].count
+                    //     }
 
-                    } else {
-                        graphObj.todayDate = todayDate.rows[0].timedone,
-                        graphObj.todayHabitCount = todayHabitCount.rows[0].count
+                    // } else if (todayDate.rows.length !== 0) {
+                    //     graphObj = {
+                    //         [`todayDate_${JSON.stringify(habitId.habit_id)}`]: todayDate.rows[0].timedone,
+                    //         [`todayHabitCount_${JSON.stringify(habitId.habit_id)}`]: todayHabitCount.rows[0].count
+                    //     }
 
+                    // } else {
+                    //     break;
+                    // }
+
+                    // let graphObj = {}
+                    // if(sixDaysBeforeDate.rows.length !== 0) {
+                    //     graphObj.todayDate = todayDate.rows[0].timedone,
+                    //     graphObj.todayHabitCount = todayHabitCount.rows[0].count,
+                    //     graphObj.yesterdayDate = yesterdayDate.rows[0].timedone,
+                    //     graphObj.yesterdayHabitCount = yesterdayHabitCount.rows[0].count,
+                    //     graphObj.dayBeforeYdayDate = dayBeforeYdayDate.rows[0].timedone,
+                    //     graphObj.dayBeforeYdayHabitCount = dayBeforeYdayHabitCount.rows[0].count,
+                    //     graphObj.threeDaysBeforeDate = threeDaysBeforeDate.rows[0].timedone,
+                    //     graphObj.threeDaysBeforeHabitCount = threeDaysBeforeHabitCount.rows[0].count,
+                    //     graphObj.fourDaysBeforeDate = fourDaysBeforeDate.rows[0].timedone,
+                    //     graphObj.fourDaysBeforeHabitCount = fourDaysBeforeHabitCount.rows[0].count,
+                    //     graphObj.fiveDaysBeforeDate = fiveDaysBeforeDate.rows[0].timedone,
+                    //     graphObj.fiveDaysBeforeHabitCount = fiveDaysBeforeHabitCount.rows[0].count,
+                    //     graphObj.sixDaysBeforeDate = sixDaysBeforeDate.rows[0].timedone,
+                    //     graphObj.sixDaysBeforeHabitCount = sixDaysBeforeHabitCount.rows[0].count
+                        
+                    // } else if (fiveDaysBeforeDate.rows.length !== 0) {
+                    //     graphObj.todayDate = todayDate.rows[0].timedone,
+                    //     graphObj.todayHabitCount = todayHabitCount.rows[0].count,
+                    //     graphObj.yesterdayDate = yesterdayDate.rows[0].timedone,
+                    //     graphObj.yesterdayHabitCount = yesterdayHabitCount.rows[0].count,
+                    //     graphObj.dayBeforeYdayDate = dayBeforeYdayDate.rows[0].timedone,
+                    //     graphObj.dayBeforeYdayHabitCount = dayBeforeYdayHabitCount.rows[0].count,
+                    //     graphObj.threeDaysBeforeDate = threeDaysBeforeDate.rows[0].timedone,
+                    //     graphObj.threeDaysBeforeHabitCount = threeDaysBeforeHabitCount.rows[0].count,
+                    //     graphObj.fourDaysBeforeDate = fourDaysBeforeDate.rows[0].timedone,
+                    //     graphObj.fourDaysBeforeHabitCount = fourDaysBeforeHabitCount.rows[0].count,
+                    //     graphObj.fiveDaysBeforeDate = fiveDaysBeforeDate.rows[0].timedone,
+                    //     graphObj.fiveDaysBeforeHabitCount = fiveDaysBeforeHabitCount.rows[0].count
+                        
+                    // } else if (fourDaysBeforeDate.rows.length !== 0) {
+                        
+                    //     graphObj.todayDate = todayDate.rows[0].timedone,
+                    //     graphObj.todayHabitCount = todayHabitCount.rows[0].count,
+                    //     graphObj.yesterdayDate = yesterdayDate.rows[0].timedone,
+                    //     graphObj.yesterdayHabitCount = yesterdayHabitCount.rows[0].count,
+                    //     graphObj.dayBeforeYdayDate = dayBeforeYdayDate.rows[0].timedone,
+                    //     graphObj.dayBeforeYdayHabitCount = dayBeforeYdayHabitCount.rows[0].count,
+                    //     graphObj.threeDaysBeforeDate = threeDaysBeforeDate.rows[0].timedone,
+                    //     graphObj.threeDaysBeforeHabitCount = threeDaysBeforeHabitCount.rows[0].count,
+                    //     graphObj.fourDaysBeforeDate = fourDaysBeforeDate.rows[0].timedone,
+                    //     graphObj.fourDaysBeforeHabitCount = fourDaysBeforeHabitCount.rows[0].count
+                        
+                    // } else if (threeDaysBeforeDate.rows.length !== 0) {
+                    //     graphObj.todayDate = todayDate.rows[0].timedone,
+                    //     graphObj.todayHabitCount = todayHabitCount.rows[0].count,
+                    //     graphObj.yesterdayDate = yesterdayDate.rows[0].timedone,
+                    //     graphObj.yesterdayHabitCount = yesterdayHabitCount.rows[0].count,
+                    //     graphObj.dayBeforeYdayDate = dayBeforeYdayDate.rows[0].timedone,
+                    //     graphObj.dayBeforeYdayHabitCount = dayBeforeYdayHabitCount.rows[0].count,
+                    //     graphObj.threeDaysBeforeDate = threeDaysBeforeDate.rows[0].timedone,
+                    //     graphObj.threeDaysBeforeHabitCount = threeDaysBeforeHabitCount.rows[0].count
+                        
+                    // } else if (dayBeforeYdayDate.rows.length !== 0) {
+                    //     graphObj.todayDate = todayDate.rows[0].timedone,
+                    //     graphObj.todayHabitCount = todayHabitCount.rows[0].count,
+                    //     graphObj.yesterdayDate = yesterdayDate.rows[0].timedone,
+                    //     graphObj.yesterdayHabitCount = yesterdayHabitCount.rows[0].count,
+                    //     graphObj.dayBeforeYdayDate = dayBeforeYdayDate.rows[0].timedone,
+                    //     graphObj.dayBeforeYdayHabitCount = dayBeforeYdayHabitCount.rows[0].count
+
+                    // } else if (yesterdayDate.rows.length !== 0) {
+                    //     graphObj.todayDate = todayDate.rows[0].timedone,
+                    //     graphObj.todayHabitCount = todayHabitCount.rows[0].count,
+                    //     graphObj.yesterdayDate = yesterdayDate.rows[0].timedone,
+                    //     graphObj.yesterdayHabitCount = yesterdayHabitCount.rows[0].count
+
+                    // } else if (todayDate.rows.length !== 0) {
+                    //     graphObj.todayDate = todayDate.rows[0].timedone,
+                    //     graphObj.todayHabitCount = todayHabitCount.rows[0].count
+
+                    // } else {
+                    //     break;
+                    // }
+
+                    
+                // }
+
+                let graphObj
+
+                    
+                    arr = [
+                        todayHabitCount.rows[0].count,
+                        yesterdayHabitCount.rows[0].count,
+                        dayBeforeYdayHabitCount.rows[0].count,
+                        threeDaysBeforeHabitCount.rows[0].count,
+                        fourDaysBeforeHabitCount.rows[0].count,
+                        fiveDaysBeforeHabitCount.rows[0].count,
+                        sixDaysBeforeHabitCount.rows[0].count
+                    ]
+
+                    console.log({[`${JSON.stringify(userHabitIds.rows[0].habit_id)}`]: arr})
+
+                    graphObj = {
+                        todayDate: todayDate.rows[0].timedone,
+                        todayHabitCount: todayHabitCount.rows,
+                        yesterdayDate: yesterdayDate.rows[0].timedone,
+                        yesterdayHabitCount: yesterdayHabitCount.rows,
+                        dayBeforeYdayDate: dayBeforeYdayDate.rows[0].timedone,
+                        dayBeforeYdayDate: dayBeforeYdayDate.rows,
+                        threeDaysBeforeDate: threeDaysBeforeDate.rows[0].timedone,
+                        threeDaysBeforeHabitCount: threeDaysBeforeHabitCount.rows,
+                        fourDaysBeforeDate: fourDaysBeforeDate.rows[0].timedone,
+                        fourDaysBeforeHabitCount: fourDaysBeforeHabitCount.rows,
+                        fiveDaysBeforeDate: fiveDaysBeforeDate.rows[0].timedone,
+                        fiveDaysBeforeHabitCount: fiveDaysBeforeHabitCount.rows,
+                        sixDaysBeforeDate: sixDaysBeforeDate.rows[0].timedone,
+                        sixDaysBeforeHabitCount: sixDaysBeforeHabitCount.rows
                     }
 
                     res(graphObj)
-                }
 
             } catch (err) {
                 rej(`There was an error retrieving that graph data: ${err}`)
