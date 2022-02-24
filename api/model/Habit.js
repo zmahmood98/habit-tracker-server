@@ -195,72 +195,98 @@ class Habit {
         });
       }
 
-      static getGraphData(id) {
-        return new Promise(async (res, rej) => {
-            try {
-                let count =[]
-                let dates = []
 
-                    let todayDate = await db.query(SQL`SELECT DISTINCT timeDone::DATE FROM habitCount WHERE timeDone::DATE = current_date AND habit_id = ${id};`)
-    
-                    let todayHabitCount = await db.query(SQL`SELECT COUNT(*) FROM habitCount WHERE timeDone::DATE = current_date AND habit_id = ${id};`);
-    
-                    let yesterdayDate = await db.query(SQL`SELECT DISTINCT timeDone::DATE FROM habitCount WHERE timeDone::DATE = current_date - 1 AND habit_id = ${id};`)
-    
-                    let yesterdayHabitCount = await db.query(SQL`SELECT COUNT(*) FROM habitCount WHERE timeDone::DATE = current_date - 1 AND habit_id = ${id};`);
-    
-                    let dayBeforeYdayDate = await db.query(SQL`SELECT DISTINCT timeDone::DATE FROM habitCount WHERE timeDone::DATE = current_date - 2 AND habit_id = ${id};`)
-    
-                    let dayBeforeYdayHabitCount = await db.query(SQL`SELECT COUNT(*) FROM habitCount WHERE timeDone::DATE = current_date - 2 AND habit_id = ${id};`);
-    
-                    let threeDaysBeforeDate = await db.query(SQL`SELECT DISTINCT timeDone::DATE FROM habitCount WHERE timeDone::DATE = current_date - 3 AND habit_id = ${id};;`)
-    
-                    let threeDaysBeforeHabitCount = await db.query(SQL`SELECT COUNT(*) FROM habitCount WHERE timeDone::DATE = current_date - 3 AND habit_id = ${id};`);
-    
-                    let fourDaysBeforeDate = await db.query(SQL`SELECT DISTINCT timeDone::DATE FROM habitCount WHERE timeDone::DATE = current_date - 4 AND habit_id = ${id};;`)
-    
-                    let fourDaysBeforeHabitCount = await db.query(SQL`SELECT COUNT(*) FROM habitCount WHERE timeDone::DATE = current_date - 4 AND habit_id = ${id};`);
-    
-                    let fiveDaysBeforeDate = await db.query(SQL`SELECT DISTINCT timeDone::DATE FROM habitCount WHERE timeDone::DATE = current_date - 5 AND habit_id = ${id};;`)
-    
-                    let fiveDaysBeforeHabitCount = await db.query(SQL`SELECT COUNT(*) FROM habitCount WHERE timeDone::DATE = current_date - 5 AND habit_id = ${id};`);
-    
-                    let sixDaysBeforeDate = await db.query(SQL`SELECT DISTINCT timeDone::DATE FROM habitCount WHERE timeDone::DATE = current_date - 6 AND habit_id = ${id};;`)
-    
-                    let sixDaysBeforeHabitCount = await db.query(SQL`SELECT COUNT(*) FROM habitCount WHERE timeDone::DATE = current_date - 6 AND habit_id = ${id};`);
-                    
-                    count = [
-                        todayHabitCount.rows[0].count,
-                        yesterdayHabitCount.rows[0].count,
-                        dayBeforeYdayHabitCount.rows[0].count,
-                        threeDaysBeforeHabitCount.rows[0].count,
-                        fourDaysBeforeHabitCount.rows[0].count,
-                        fiveDaysBeforeHabitCount.rows[0].count,
-                        sixDaysBeforeHabitCount.rows[0].count
-                        ]
 
-                    dates = [
-                        todayDate.rows[0],
-                        yesterdayDate.rows[0],
-                        dayBeforeYdayDate.rows[0],
-                        threeDaysBeforeDate.rows[0],
-                        fourDaysBeforeDate.rows[0],
-                        fiveDaysBeforeDate.rows[0],
-                        sixDaysBeforeDate.rows[0]
-                    ]
+    // Get graph data by email
+      static getGraphData(email) {
 
-                    // for( let i = 0; i < dates.length; i++ ) {
-                    //     let r = dates[i];
-                    //     count[i]  = !!r ? count[i] : null;
-                    // } 
-                                 
-                    for( let i = 0; i < dates.length; i++ ) {
-                        let r = dates[i];
-                        dates[i]  = !!r ? r.timedone : 0;
-                        console.log(dates[i] )
-                    } 
+                const userid = await db.query(SQL`SELECT user_id FROM users WHERE email = ${email};`)
 
-                    res({dates,count})
+                // all rows in habit table for a specific user
+                const userHabitIds = await db.query(SQL`SELECT habit_id FROM habit WHERE user_id = ${userid.rows[0].user_id};`);
+
+                // array of all habit ids linked to a user
+                // e.g for jon: [2, 3, 4]
+                let habitIdArr = []
+                for (let i = 0; i < userHabitIds.rows.length; i++) {
+                    habitIdArr.push(userHabitIds.rows[i].habit_id)
+                }
+
+                let graphdataArr = []
+
+                const todayDate = await db.query(SQL`SELECT DISTINCT timeDone::DATE FROM habitCount WHERE timeDone::DATE = current_date;`)
+                graphdataArr.push(todayDate.rows[0].timedone)
+
+                for (let i = 0; i < habitIdArr.length; i++) {
+                    const todayHabitCount = await db.query(SQL`SELECT COUNT(*) FROM habitCount WHERE timeDone::DATE = current_date AND habit_id = ${habitIdArr[i]};`);
+                    graphdataArr.push(
+                        { [`${habitIdArr[i]}`]: todayHabitCount.rows[0].count})
+                }
+
+                const yesterdayDate = await db.query(SQL`SELECT DISTINCT timeDone::DATE FROM habitCount WHERE timeDone::DATE = current_date - 1;`)
+                graphdataArr.push(yesterdayDate.rows[0].timedone)
+
+                for (let i = 0; i < habitIdArr.length; i++) {
+                    const yesterdayHabitCount = await db.query(SQL`SELECT COUNT(*) FROM habitCount WHERE timeDone::DATE = current_date - 1 AND habit_id = ${habitIdArr[i]};`);
+                    graphdataArr.push(
+                        { [`${habitIdArr[i]}`]: yesterdayHabitCount.rows[0].count})
+                }
+    
+                const dayBeforeYdayDate = await db.query(SQL`SELECT DISTINCT timeDone::DATE FROM habitCount WHERE timeDone::DATE = current_date - 2;`)
+                graphdataArr.push(dayBeforeYdayDate.rows[0].timedone)
+
+                for (let i = 0; i < habitIdArr.length; i++) {
+                    const dayBeforeYdaydHabitCount = await db.query(SQL`SELECT COUNT(*) FROM habitCount WHERE timeDone::DATE = current_date - 2 AND habit_id = ${habitIdArr[i]};`);
+                    graphdataArr.push(
+                        { [`${habitIdArr[i]}`]: dayBeforeYdaydHabitCount.rows[0].count})
+                }
+    
+                const threeDaysBeforeDate = await db.query(SQL`SELECT DISTINCT timeDone::DATE FROM habitCount WHERE timeDone::DATE = current_date - 3;`)
+                graphdataArr.push(threeDaysBeforeDate.rows[0].timedone)
+
+                for (let i = 0; i < habitIdArr.length; i++) {
+                    const threeDaysBeforeHabitCount = await db.query(SQL`SELECT COUNT(*) FROM habitCount WHERE timeDone::DATE = current_date - 3 AND habit_id = ${habitIdArr[i]};`);
+                    graphdataArr.push(
+                        { [`${habitIdArr[i]}`]: threeDaysBeforeHabitCount.rows[0].count})
+                }
+    
+                const fourDaysBeforeDate = await db.query(SQL`SELECT DISTINCT timeDone::DATE FROM habitCount WHERE timeDone::DATE = current_date - 4;`)
+                graphdataArr.push(fourDaysBeforeDate.rows[0].timedone)
+
+                for (let i = 0; i < habitIdArr.length; i++) {
+                    const fourDaysBeforeHabitCount = await db.query(SQL`SELECT COUNT(*) FROM habitCount WHERE timeDone::DATE = current_date - 4 AND habit_id = ${habitIdArr[i]};`);
+                    graphdataArr.push(
+                        { [`${habitIdArr[i]}`]: fourDaysBeforeHabitCount.rows[0].count})
+                }
+
+                const fiveDaysBeforeDate = await db.query(SQL`SELECT DISTINCT timeDone::DATE FROM habitCount WHERE timeDone::DATE = current_date - 5;`)
+                graphdataArr.push(fiveDaysBeforeDate.rows[0].timedone)
+
+                for (let i = 0; i < habitIdArr.length; i++) {
+                    const fiveDaysBeforeHabitCount = await db.query(SQL`SELECT COUNT(*) FROM habitCount WHERE timeDone::DATE = current_date - 5 AND habit_id = ${habitIdArr[i]};`);
+                    graphdataArr.push(
+                        { [`${habitIdArr[i]}`]: fiveDaysBeforeHabitCount.rows[0].count})
+                }
+
+                const sixDaysBeforeDate = await db.query(SQL`SELECT DISTINCT timeDone::DATE FROM habitCount WHERE timeDone::DATE = current_date - 6;`)
+                graphdataArr.push(sixDaysBeforeDate.rows[0].timedone)
+    
+                for (let i = 0; i < habitIdArr.length; i++) {
+                    const sixDaysBeforeHabitCount = await db.query(SQL`SELECT COUNT(*) FROM habitCount WHERE timeDone::DATE = current_date - 6 AND habit_id = ${habitIdArr[i]};`);
+                    graphdataArr.push(
+                        { [`${habitIdArr[i]}`]: sixDaysBeforeHabitCount.rows[0].count})
+                }
+
+                // let datesarr = []
+                // datesarr.push(graphdataArr[0])
+                // datesarr.push(graphdataArr[((graphdataArr.length)/7)])
+                // datesarr.push(graphdataArr[(((graphdataArr.length)/7)*2)])
+                // datesarr.push(graphdataArr[(((graphdataArr.length)/7)*3)])
+                // datesarr.push(graphdataArr[(((graphdataArr.length)/7)*4)])
+                // datesarr.push(graphdataArr[(((graphdataArr.length)/7)*5)])
+                // console.log('this is datesarr', datesarr)
+                
+                res(graphdataArr)
 
             } catch (err) {
                 rej(`There was an error retrieving that graph data: ${err}`)
@@ -268,129 +294,6 @@ class Habit {
         })
     }
 }
-
-// static getGraphData(email) {
-//     return new Promise(async (res, rej) => {
-//         try {
-
-//             const userid = await db.query(SQL`SELECT user_id FROM users WHERE email = ${email};`)
-
-//             // all rows in habit table for a specific user
-//             const userHabitIds = await db.query(SQL`SELECT habit_id FROM habit WHERE user_id = ${userid.rows[0].user_id};`);
-
-//             for(let habitId of userHabitIds.rows) {
-
-//                 const todayDate = await db.query(SQL`SELECT DISTINCT timeDone::DATE FROM habitCount WHERE timeDone::DATE = current_date;`)
-
-//                 const todayHabitCount = await db.query(SQL`SELECT COUNT(*) FROM habitCount WHERE timeDone::DATE = current_date AND habit_id = ${habitId.habit_id};`);
-
-//                 const yesterdayDate = await db.query(SQL`SELECT DISTINCT timeDone::DATE FROM habitCount WHERE timeDone::DATE = current_date - 1;`)
-
-//                 const yesterdayHabitCount = await db.query(SQL`SELECT COUNT(*) FROM habitCount WHERE timeDone::DATE = current_date - 1 AND habit_id = ${habitId.habit_id};`);
-
-//                 const dayBeforeYdayDate = await db.query(SQL`SELECT DISTINCT timeDone::DATE FROM habitCount WHERE timeDone::DATE = current_date - 2;`)
-
-//                 const dayBeforeYdaydHabitCount = await db.query(SQL`SELECT COUNT(*) FROM habitCount WHERE timeDone::DATE = current_date - 2 AND habit_id = ${habitId.habit_id};`);
-
-//                 const threeDaysBeforeDate = await db.query(SQL`SELECT DISTINCT timeDone::DATE FROM habitCount WHERE timeDone::DATE = current_date - 3;`)
-
-//                 const threeDaysBeforeHabitCount = await db.query(SQL`SELECT COUNT(*) FROM habitCount WHERE timeDone::DATE = current_date - 3 AND habit_id = ${habitId.habit_id};`);
-
-//                 const fourDaysBeforeDate = await db.query(SQL`SELECT DISTINCT timeDone::DATE FROM habitCount WHERE timeDone::DATE = current_date - 4;`)
-
-//                 const fourDaysBeforeHabitCount = await db.query(SQL`SELECT COUNT(*) FROM habitCount WHERE timeDone::DATE = current_date - 4 AND habit_id = ${habitId.habit_id};`);
-
-//                 const fiveDaysBeforeDate = await db.query(SQL`SELECT DISTINCT timeDone::DATE FROM habitCount WHERE timeDone::DATE = current_date - 5;`)
-
-//                 const fiveDaysBeforeHabitCount = await db.query(SQL`SELECT COUNT(*) FROM habitCount WHERE timeDone::DATE = current_date - 5 AND habit_id = ${habitId.habit_id};`);
-
-//                 const sixDaysBeforeDate = await db.query(SQL`SELECT DISTINCT timeDone::DATE FROM habitCount WHERE timeDone::DATE = current_date - 6;`)
-
-//                 const sixDaysBeforeHabitCount = await db.query(SQL`SELECT COUNT(*) FROM habitCount WHERE timeDone::DATE = current_date - 6 AND habit_id = ${habitId.habit_id};`);
-
-//                 let graphObj = {}
-
-//                 if(sixDaysBeforeDate.rows.length !== 0) {
-//                     graphObj.todayDate = todayDate.rows[0].timedone,
-//                     graphObj.todayHabitCount = todayHabitCount.rows[0].count,
-//                     graphObj.yesterdayDate = yesterdayDate.rows[0].timedone,
-//                     graphObj.yesterdayHabitCount = yesterdayHabitCount.rows[0].count,
-//                     graphObj.dayBeforeYdayDate = dayBeforeYdayDate.rows[0].timedone,
-//                     graphObj.dayBeforeYdaydHabitCount = dayBeforeYdaydHabitCount.rows[0].count,
-//                     graphObj.threeDaysBeforeDate = threeDaysBeforeDate.rows[0].timedone,
-//                     graphObj.threeDaysBeforeHabitCount = threeDaysBeforeHabitCount.rows[0].count,
-//                     graphObj.fourDaysBeforeDate = fourDaysBeforeDate.rows[0].timedone,
-//                     graphObj.fourDaysBeforeHabitCount = fourDaysBeforeHabitCount.rows[0].count,
-//                     graphObj.fiveDaysBeforeDate = fiveDaysBeforeDate.rows[0].timedone,
-//                     graphObj.fiveDaysBeforeHabitCount = fiveDaysBeforeHabitCount.rows[0].count,
-//                     graphObj.sixDaysBeforeDate = sixDaysBeforeDate.rows[0].timedone,
-//                     graphObj.sixDaysBeforeHabitCount = sixDaysBeforeHabitCount.rows[0].count
-                    
-//                 } else if (fiveDaysBeforeDate.rows.length !== 0) {
-//                     graphObj.todayDate = todayDate.rows[0].timedone,
-//                     graphObj.todayHabitCount = todayHabitCount.rows[0].count,
-//                     graphObj.yesterdayDate = yesterdayDate.rows[0].timedone,
-//                     graphObj.yesterdayHabitCount = yesterdayHabitCount.rows[0].count,
-//                     graphObj.dayBeforeYdayDate = dayBeforeYdayDate.rows[0].timedone,
-//                     graphObj.dayBeforeYdaydHabitCount = dayBeforeYdaydHabitCount.rows[0].count,
-//                     graphObj.threeDaysBeforeDate = threeDaysBeforeDate.rows[0].timedone,
-//                     graphObj.threeDaysBeforeHabitCount = threeDaysBeforeHabitCount.rows[0].count,
-//                     graphObj.fourDaysBeforeDate = fourDaysBeforeDate.rows[0].timedone,
-//                     graphObj.fourDaysBeforeHabitCount = fourDaysBeforeHabitCount.rows[0].count,
-//                     graphObj.fiveDaysBeforeDate = fiveDaysBeforeDate.rows[0].timedone,
-//                     graphObj.fiveDaysBeforeHabitCount = fiveDaysBeforeHabitCount.rows[0].count
-                    
-//                 } else if (fourDaysBeforeDate.rows.length !== 0) {
-                    
-//                     graphObj.todayDate = todayDate.rows[0].timedone,
-//                     graphObj.todayHabitCount = todayHabitCount.rows[0].count,
-//                     graphObj.yesterdayDate = yesterdayDate.rows[0].timedone,
-//                     graphObj.yesterdayHabitCount = yesterdayHabitCount.rows[0].count,
-//                     graphObj.dayBeforeYdayDate = dayBeforeYdayDate.rows[0].timedone,
-//                     graphObj.dayBeforeYdaydHabitCount = dayBeforeYdaydHabitCount.rows[0].count,
-//                     graphObj.threeDaysBeforeDate = threeDaysBeforeDate.rows[0].timedone,
-//                     graphObj.threeDaysBeforeHabitCount = threeDaysBeforeHabitCount.rows[0].count,
-//                     graphObj.fourDaysBeforeDate = fourDaysBeforeDate.rows[0].timedone,
-//                     graphObj.fourDaysBeforeHabitCount = fourDaysBeforeHabitCount.rows[0].count
-                    
-//                 } else if (threeDaysBeforeDate.rows.length !== 0) {
-//                     graphObj.todayDate = todayDate.rows[0].timedone,
-//                     graphObj.todayHabitCount = todayHabitCount.rows[0].count,
-//                     graphObj.yesterdayDate = yesterdayDate.rows[0].timedone,
-//                     graphObj.yesterdayHabitCount = yesterdayHabitCount.rows[0].count,
-//                     graphObj.dayBeforeYdayDate = dayBeforeYdayDate.rows[0].timedone,
-//                     graphObj.dayBeforeYdaydHabitCount = dayBeforeYdaydHabitCount.rows[0].count,
-//                     graphObj.threeDaysBeforeDate = threeDaysBeforeDate.rows[0].timedone,
-//                     graphObj.threeDaysBeforeHabitCount = threeDaysBeforeHabitCount.rows[0].count
-                    
-//                 } else if (dayBeforeYdayDate.rows.length !== 0) {
-//                     graphObj.todayDate = todayDate.rows[0].timedone,
-//                     graphObj.todayHabitCount = todayHabitCount.rows[0].count,
-//                     graphObj.yesterdayDate = yesterdayDate.rows[0].timedone,
-//                     graphObj.yesterdayHabitCount = yesterdayHabitCount.rows[0].count,
-//                     graphObj.dayBeforeYdayDate = dayBeforeYdayDate.rows[0].timedone,
-//                     graphObj.dayBeforeYdaydHabitCount = dayBeforeYdaydHabitCount.rows[0].count
-
-//                 } else if (yesterdayDate.rows.length !== 0) {
-//                     graphObj.todayDate = todayDate.rows[0].timedone,
-//                     graphObj.todayHabitCount = todayHabitCount.rows[0].count,
-//                     graphObj.yesterdayDate = yesterdayDate.rows[0].timedone,
-//                     graphObj.yesterdayHabitCount = yesterdayHabitCount.rows[0].count
-
-//                 } else {
-//                     graphObj.todayDate = todayDate.rows[0].timedone,
-//                     graphObj.todayHabitCount = todayHabitCount.rows[0].count
-
-//                 }
-
-//                 res(graphObj)
-//             }
-
-//         } catch (err) {
-//             rej(`There was an error retrieving that graph data: ${err}`)
-//         }
-//     })
-// }
 
 
 
