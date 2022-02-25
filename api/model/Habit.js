@@ -157,7 +157,7 @@ class Habit {
           try {
 
             // Insert habits into habitCounter
-            await db.query(SQL`INSERT INTO habitCount (habit_id, completedStreak) VALUES (${data.habit_id}, FALSE);`);
+            await db.query(SQL`INSERT INTO habitCount (habit_id) VALUES (${data.habit_id});`);
             
             // user's inputted desired frequency
             const dFrequency = await db.query(SQL`SELECT frequency FROM habit WHERE habit_id=${data.habit_id};`);
