@@ -24,6 +24,7 @@ async function create (req, res){
 async function destroy(req, res){
     try {
         const deleteHabit = await Habit.deleteHabit(req.params.id);
+        //console.log(`this is delete habit ${deleteHabit}`);
         res.status(202).json(deleteHabit)
 
     } catch (err) {
@@ -68,9 +69,20 @@ async function updateHabitCounter(req, res) {
 async function getGraphData (req, res){
     try {
         const data = await Habit.getGraphData(req.params.email);
+        if(Object.keys(data).length === 0){throw new Error};
         res.status(200).json(data)
     } catch (err) {
-        res.status(500).send({ err })
+        res.status(404).send({ err })
+    }
+}
+
+async function getGraphDatabyHabitId (req, res){
+    try {
+        const data = await Habit.getGraphDatabyHabitId(req.params.id);
+        if(Object.keys(data).length === 0){throw new Error};
+        res.status(200).json(data)
+    } catch (err) {
+        res.status(404).send({ err })
     }
 }
 
@@ -82,5 +94,6 @@ module.exports = {
     getHabitsByEmail,
     getHabits,
     updateHabitCounter,
-    getGraphData
+    getGraphData,
+    getGraphDatabyHabitId
 }
