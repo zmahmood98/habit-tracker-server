@@ -46,7 +46,7 @@ CREATE TABLE habitCount (
     FOREIGN KEY(habit_id)
         REFERENCES habit(habit_id) 
         ON DELETE CASCADE ON UPDATE CASCADE,
-    timeDone timestamp DEFAULT CURRENT_timestamp,
+    timeDone timestamp DEFAULT CURRENT_timestamp
 );
 
 INSERT INTO habitCount(habit_id, timeDone) VALUES
