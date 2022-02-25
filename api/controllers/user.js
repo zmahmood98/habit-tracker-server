@@ -14,7 +14,7 @@ async function index (req, res) {
 async function findByName (req, res){
 try{ 
         const findName = await User.findUsername(req.params.username); 
-        if (!findName.length) {throw new Error('User not found found')}
+        if (!findName.length) {throw new Error('User not found')}
         res.status(200).json(findName);
 } catch(err) {
         res.status(403).json(err.message);
