@@ -46,72 +46,71 @@ CREATE TABLE habitCount (
     FOREIGN KEY(habit_id)
         REFERENCES habit(habit_id) 
         ON DELETE CASCADE ON UPDATE CASCADE,
-    timeDone timestamp DEFAULT CURRENT_timestamp,
-    completedStreak BOOLEAN
+    timeDone timestamp DEFAULT CURRENT_timestamp
 );
 
-INSERT INTO habitCount(habit_id, timeDone, completedStreak) VALUES
+INSERT INTO habitCount(habit_id, timeDone) VALUES
 
         --completed task 1 three times today
-        (1, current_timestamp, FALSE),
-        (1, current_timestamp, FALSE),
-        (1, current_timestamp, FALSE),
+        (1, current_timestamp),
+        (1, current_timestamp),
+        (1, current_timestamp),
         
         --completed task 1 8 times yesterday
-        (1, current_timestamp - INTERVAL '1 day', FALSE),
-        (1, current_timestamp - INTERVAL '1 day', FALSE),
-        (1, current_timestamp - INTERVAL '1 day', FALSE),
-        (1, current_timestamp - INTERVAL '1 day', FALSE),
-        (1, current_timestamp - INTERVAL '1 day', FALSE),
-        (1, current_timestamp - INTERVAL '1 day', FALSE),
-        (1, current_timestamp - INTERVAL '1 day', FALSE),
-        (1, current_timestamp - INTERVAL '1 day', FALSE),
+        (1, current_timestamp - INTERVAL '1 day'),
+        (1, current_timestamp - INTERVAL '1 day'),
+        (1, current_timestamp - INTERVAL '1 day'),
+        (1, current_timestamp - INTERVAL '1 day'),
+        (1, current_timestamp - INTERVAL '1 day'),
+        (1, current_timestamp - INTERVAL '1 day'),
+        (1, current_timestamp - INTERVAL '1 day'),
+        (1, current_timestamp - INTERVAL '1 day'),
 
 
         --completed task 1 8 times the day before
-        (1, current_timestamp - INTERVAL '2 day', FALSE),
-        (1, current_timestamp - INTERVAL '2 day', FALSE),
-        (1, current_timestamp - INTERVAL '2 day', FALSE),
-        (1, current_timestamp - INTERVAL '2 day', FALSE),
-        (1, current_timestamp - INTERVAL '2 day', FALSE),
-        (1, current_timestamp - INTERVAL '2 day', FALSE),
-        (1, current_timestamp - INTERVAL '2 day', FALSE),
-        (1, current_timestamp - INTERVAL '2 day', FALSE),
+        (1, current_timestamp - INTERVAL '2 day'),
+        (1, current_timestamp - INTERVAL '2 day'),
+        (1, current_timestamp - INTERVAL '2 day'),
+        (1, current_timestamp - INTERVAL '2 day'),
+        (1, current_timestamp - INTERVAL '2 day'),
+        (1, current_timestamp - INTERVAL '2 day'),
+        (1, current_timestamp - INTERVAL '2 day'),
+        (1, current_timestamp - INTERVAL '2 day'),
 
         --completed task 1 8 times the day before that
-        (1, current_timestamp - INTERVAL '3 day', FALSE),
-        (1, current_timestamp - INTERVAL '3 day', FALSE),
-        (1, current_timestamp - INTERVAL '3 day', FALSE),
-        (1, current_timestamp - INTERVAL '3 day', FALSE),
-        (1, current_timestamp - INTERVAL '3 day', FALSE),
-        (1, current_timestamp - INTERVAL '3 day', FALSE),
-        (1, current_timestamp - INTERVAL '3 day', FALSE),
-        (1, current_timestamp - INTERVAL '3 day', FALSE),
+        (1, current_timestamp - INTERVAL '3 day'),
+        (1, current_timestamp - INTERVAL '3 day'),
+        (1, current_timestamp - INTERVAL '3 day'),
+        (1, current_timestamp - INTERVAL '3 day'),
+        (1, current_timestamp - INTERVAL '3 day'),
+        (1, current_timestamp - INTERVAL '3 day'),
+        (1, current_timestamp - INTERVAL '3 day'),
+        (1, current_timestamp - INTERVAL '3 day'),
 
         --completed habit 2 once two days ago (did not complete yesterday or today)
-        (2, current_timestamp - INTERVAL '2 day', FALSE),
+        (2, current_timestamp - INTERVAL '2 day'),
 
         --completed habit 3 twice today
-        (3, current_timestamp, FALSE),
-        (3, current_timestamp, FALSE),
+        (3, current_timestamp),
+        (3, current_timestamp),
 
         --completed task 4 1 time today
-        (4, current_timestamp, FALSE),
+        (4, current_timestamp),
         --completed task 4 2 times 1 day ago
-        (4, current_timestamp - INTERVAL '1 day', FALSE),
-        (4, current_timestamp - INTERVAL '1 day', FALSE),
+        (4, current_timestamp - INTERVAL '1 day'),
+        (4, current_timestamp - INTERVAL '1 day'),
         --completed task 4 2 times 2 days ago
-        (4, current_timestamp - INTERVAL '2 day', FALSE),
-        (4, current_timestamp - INTERVAL '2 day', FALSE),
+        (4, current_timestamp - INTERVAL '2 day'),
+        (4, current_timestamp - INTERVAL '2 day'),
         --completed task 4 2 times 3 days ago
-        (4, current_timestamp - INTERVAL '3 day', FALSE),
-        (4, current_timestamp - INTERVAL '3 day', FALSE),
+        (4, current_timestamp - INTERVAL '3 day'),
+        (4, current_timestamp - INTERVAL '3 day'),
         --completed task 4 2 times 4 days ago
-        (4, current_timestamp - INTERVAL '4 day', FALSE),
-        (4, current_timestamp - INTERVAL '4 day', FALSE),
+        (4, current_timestamp - INTERVAL '4 day'),
+        (4, current_timestamp - INTERVAL '4 day'),
         --completed task 4 2 times 5 days ago
-        (4, current_timestamp - INTERVAL '5 day', FALSE),
-        (4, current_timestamp - INTERVAL '5 day', FALSE),
+        (4, current_timestamp - INTERVAL '5 day'),
+        (4, current_timestamp - INTERVAL '5 day'),
         --completed task 4 2 times 6 days ago
-        (4, current_timestamp - INTERVAL '6 day', FALSE),
-        (4, current_timestamp - INTERVAL '6 day', FALSE);
+        (4, current_timestamp - INTERVAL '6 day'),
+        (4, current_timestamp - INTERVAL '6 day');
