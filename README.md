@@ -47,14 +47,6 @@ The server side is stored in [this repo](https://github.com/Dafe-akaka/habit-tra
 * [docker 🔗](https://docker.com/)
 * [Jest 🔗](https://jestjs.io/)
 
-### Deployment
-
-This server is currently deployed at ...heroku.....
-
-
-## Design & Implementation
-
-To create this ....
 
 ## Main routes
 
@@ -70,18 +62,6 @@ To create this ....
 
 - [x] `bcrypt.compare()` deprecated
 - [x] same email can be used to open different user accounts
-
-## Remaining Bugs
-
-- 
-
-## Pitfalls & Discoveries
-
-
-
-## Future Features
-
-
 
 ## License
 
